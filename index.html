@@ -14,12 +14,12 @@
 @font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/Inter-Regular.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:600;font-style:normal;font-display:swap;src:url("fonts/Inter-SemiBold.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:800;font-style:normal;font-display:swap;src:url("fonts/Inter-ExtraBold.woff2") format("woff2")}
-/* Вёрстка как в «Фартук · Смена». Цвета — прежние: синий акцент, тема светлая/тёмная по настройке телефона.
-   Все цвета только здесь, по имени. Нужен красный из логотипа — поменять --accent на #dc0000. */
+/* Вёрстка как в «Фартук · Смена». Цвета: серый акцент (оттенки серого), тема светлая/тёмная по настройке телефона.
+   Все цвета только здесь, по имени. Другой акцент — поменять --accent, --accent-ink, --accent-soft, --bar. */
 :root{
   --bg:#f4f5f7; --card:#ffffff; --field:#eceff3; --line:#e4e6ea;
   --text:#1b1d21; --text-2:#4a4f57; --hint:#7a8088;
-  --accent:#2f6df6; --accent-ink:#2f6df6; --accent-soft:#e8efff; --on-color:#ffffff;
+  --accent:#4a4f57; --accent-ink:#3a3e45; --accent-soft:#d9dce1; --on-color:#ffffff; --bar:#7d828a;
   --dark:#1b1d21; --seg-ink:#ffffff;
   --fab:#78bf33; --fab-ink:#0f2200;   /* круглая кнопка «+» — салатово-зелёный, между S7 и мятным */
   --ok:#1f9d55; --ok-soft:#e3f5ea; --warn:#c77d00; --warn-soft:#fff3dc; --err:#d9382c; --err-soft:#fde8e6;
@@ -29,7 +29,7 @@
 @media (prefers-color-scheme:dark){:root{
   --bg:#111316; --card:#1b1e23; --field:#262a31; --line:#2a2e35;
   --text:#eceef1; --text-2:#b5bac2; --hint:#8c929b;
-  --accent:#5b8cff; --accent-ink:#5b8cff; --accent-soft:#1c2744; --on-color:#0b1020;
+  --accent:#c9cdd3; --accent-ink:#d5d8dd; --accent-soft:#3d434b; --on-color:#14161a; --bar:#9aa0a8;
   --dark:#eceef1; --seg-ink:#111316;
   --fab:#78bf33; --fab-ink:#0f2200;
   --ok:#4cc27f; --ok-soft:#14301f; --warn:#e8a73a; --warn-soft:#3a2c10; --err:#ff6b5e; --err-soft:#3a1a17;
@@ -117,7 +117,7 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .kv.tap{cursor:pointer}
 .bad-row{color:var(--warn)}
 .bars{display:flex;align-items:flex-end;gap:2px;margin:6px 0 2px}
-.bar{flex:1;background:var(--accent);border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.bar{flex:1;background:var(--bar);border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
 .bar.zero{background:var(--field)}
 .bcol{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer}
 .bcol .bar{flex:none;transition:opacity .15s}
@@ -182,7 +182,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-14.10';
+const APP_VERSION = '2026-11-14.11';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
