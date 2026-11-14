@@ -74,7 +74,7 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .bk .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .bk .time{font-weight:800;font-size:17px}
 .bk .total{font-weight:600}
-.bk .name{margin-top:2px}
+.bk .name{margin-top:2px;color:var(--fab);font-weight:600;font-size:17px}
 .bk .meta{color:var(--hint);font-size:12px;margin-top:2px}
 .bk .meta.nt{color:var(--text-2);font-size:14px}
 .marks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -94,10 +94,12 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .cell{height:40px;border:0;border-radius:8px;background:var(--field);position:relative;font-weight:600;font-size:15px;color:var(--text);padding:0}
 .cell.out{visibility:hidden}
 .cell.past{color:var(--hint);font-weight:400}
-.cell.has{background:var(--accent-soft);color:var(--accent-ink);font-weight:800}
-.cell.today{outline:2px solid var(--accent);outline-offset:-2px}
+.cell.has{background:var(--fab);color:var(--fab-ink);font-weight:800}
+.cell.today{outline:2px solid var(--text);outline-offset:-2px}
 .cell .dot{position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--ok)}
-.cell .dot.bad{background:var(--err)}
+.cell .dot.bad{background:var(--err);box-shadow:0 0 0 1.5px #fff}
+.cell.has .dot{background:var(--fab-ink)}
+.cell.has .dot.bad{background:var(--err)}
 .legend{color:var(--hint);font-size:12px;margin:2px 12px}
 
 /* выручка */
@@ -182,7 +184,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-14.11';
+const APP_VERSION = '2026-11-14.13';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
