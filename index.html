@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Брони помещения</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#f4f5f7; --card:#fff; --text:#1b1d21; --muted:#7a8088; --line:#e4e6ea;
+  --accent:#2f6df6; --accent-t:#fff; --ok:#1f9d55; --bad:#d9382c; --warn:#c77d00;
+  --okbg:#e3f5ea; --badbg:#fde8e6; --accbg:#e8efff;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111316; --card:#1b1e23; --text:#eceef1; --muted:#8c929b; --line:#2a2e35;
+  --accent:#5b8cff; --accent-t:#0b1020; --ok:#4cc27f; --bad:#ff6b5e; --warn:#e8a73a;
+  --okbg:#14301f; --badbg:#3a1a17; --accbg:#1c2744;
+}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.35 -apple-system,"Segoe UI",Roboto,Inter,sans-serif}
+button,input,textarea{font:inherit;color:inherit}
+body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 16px 8px}
+h1{margin:0 0 10px;font-size:20px}
+.tabs{display:flex;gap:4px;background:var(--line);padding:3px;border-radius:12px}
+.tabs button{flex:1;border:0;background:none;padding:8px 0;border-radius:10px;color:var(--muted);font-weight:600}
+.tabs button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px #0002}
+main{padding:4px 16px 16px}
+.banner{margin:8px 16px 0;padding:10px 12px;border-radius:12px;background:var(--badbg);color:var(--bad);font-size:14px}
+.day-h{margin:16px 2px 6px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.day-h.today{color:var(--accent)}
+.card{background:var(--card);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 1px 2px #0001}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.time{font-weight:700;font-size:17px}
+.sum{font-weight:700}
+.name{margin-top:2px;color:var(--text)}
+.sub{color:var(--muted);font-size:14px;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{border:0;border-radius:999px;padding:7px 12px;font-size:14px;font-weight:600;background:var(--badbg);color:var(--bad)}
+.chip.ok{background:var(--okbg);color:var(--ok)}
+.act{display:flex;gap:8px;margin-top:10px}
+.act a,.act button{flex:1;text-align:center;text-decoration:none;border:1px solid var(--line);background:none;border-radius:12px;padding:9px 0;font-size:14px;font-weight:600;color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+.link{color:var(--accent);background:none;border:0;padding:8px 0;font-weight:600}
+/* календарь */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin:6px 0 10px}
+.cal-nav b{font-size:18px;text-transform:capitalize}
+.cal-nav button{border:0;background:var(--card);width:40px;height:40px;border-radius:12px;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{font-size:12px;color:var(--muted);text-align:center;padding:4px 0}
+.cell{aspect-ratio:1;border:0;border-radius:12px;background:var(--card);position:relative;font-weight:600}
+.cell.out{visibility:hidden}
+.cell.today{outline:2px solid var(--accent)}
+.cell.sel{background:var(--accent);color:var(--accent-t)}
+.cell.has{background:var(--accbg)}
+.cell.has.sel{background:var(--accent)}
+.cell .dot{position:absolute;bottom:5px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--ok)}
+.cell .dot.bad{background:var(--bad)}
+/* итоги */
+.stat{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border:0}
+.stat.big{font-weight:800;font-size:18px}
+/* кнопки и шторка */
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:6;border:0;border-radius:999px;background:var(--accent);color:var(--accent-t);padding:15px 22px;font-weight:700;box-shadow:0 4px 14px #0004}
+.sheet-bg{position:fixed;inset:0;background:#0007;z-index:20;display:none}
+.sheet-bg.on{display:block}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:92vh;overflow:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 12px;font-size:19px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input,textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:11px 12px;outline:none}
+input:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:160px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{width:100%;border:0;border-radius:14px;padding:14px;font-weight:700;background:var(--accent);color:var(--accent-t);margin-top:14px}
+.btn.sec{background:var(--card);color:var(--accent);border:1px solid var(--line);margin-top:8px}
+.btn.del{background:none;color:var(--bad);border:1px solid var(--line)}
+.tog{display:flex;gap:8px;margin-top:10px}
+.tog .chip{flex:1;padding:11px}
+.pv{border-top:1px solid var(--line);padding:10px 0}
+.pv:first-of-type{border:0}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;margin-right:6px}
+.tag.new{background:var(--okbg);color:var(--ok)}
+.tag.upd{background:var(--accbg);color:var(--accent)}
+.tag.same{background:var(--line);color:var(--muted)}
+.center{text-align:center;padding:60px 24px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:30;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+.ver{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Брони помещения</h1>
+  <div class="tabs" id="tabs">
+    <button data-t="list" class="on">Список</button>
+    <button data-t="cal">Календарь</button>
+    <button data-t="sum">Итоги</button>
+  </div>
+</header>
+<div id="banner"></div>
+<main id="view"></main>
+<button class="fab" id="fab">+ Бронь</button>
+<div class="sheet-bg" id="bg"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ НАСТРОЙКИ ============ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
+const APP_VERSION = '2026-11-14.1';
+/* ===================================== */
+
+const tg = window.Telegram && Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+const initData = tg ? tg.initData : '';
+const apiReady = !API_URL.startsWith('PASTE');
+const CACHE_KEY = 'broni_cache_v1';
+
+let bookings = [];
+let tab = 'list';
+let showPast = false;
+let calMonth = new Date(); calMonth.setDate(1);
+let calSel = null;
+let sumMonth = new Date(); sumMonth.setDate(1);
+let denied = null;
+
+/* ---------- утилиты ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const parseIso = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const money = n => (Number(n) || 0).toLocaleString('ru-RU').replace(/ /g, ' ') + ' ₽';
+const MONTHS = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+const MONTHS_G = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const DOW = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const todayIso = () => iso(new Date());
+
+function dayLabel(s) {
+  const d = parseIso(s), t = parseIso(todayIso());
+  const diff = Math.round((d - t) / 864e5);
+  const base = DOW[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS_G[d.getMonth()];
+  return diff === 0 ? 'Сегодня · ' + base : diff === 1 ? 'Завтра · ' + base : base;
+}
+function fmtPhone(p) {
+  const d = String(p || '').replace(/\D/g, '');
+  if (d.length === 11) return `+${d[0]} ${d.slice(1, 4)} ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9)}`;
+  return p || '';
+}
+function timeRange(b) {
+  if (!b.from) return 'время не указано';
+  const night = b.to && b.to <= b.from;
+  return b.from + '–' + (b.to || '?') + (night ? ' (до утра)' : '');
+}
+const total = b => (b.rent || 0) + (b.cleaning || 0) + (b.bartender || 0);
+const sorted = arr => arr.slice().sort((a, b) => (a.date + a.from).localeCompare(b.date + b.from));
+
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ---------- разбор текста из чата ---------- */
+/*PARSER_START*/
+function parseBookings(text, todayStr) {
+  const today = todayStr ? new Date(todayStr + 'T00:00:00') : new Date();
+  const lines = String(text).replace(/ /g, ' ').replace(/[️​]/g, '').split(/\r?\n/).map(s => s.trim());
+  const blocks = []; let cur = null;
+  for (const l of lines) {
+    const m = l.match(/^(\d{1,2})[.\/](\d{1,2})(?:[.\/](\d{2,4}))?$/);
+    if (m) { cur = { d: +m[1], mo: +m[2], y: m[3] ? (+m[3] < 100 ? 2000 + +m[3] : +m[3]) : 0, lines: [] }; blocks.push(cur); }
+    else if (cur && l) cur.lines.push(l);
+  }
+  const num = s => +String(s).replace(/\D/g, '') || 0;
+  const out = [];
+  for (const b of blocks) {
+    let y = b.y;
+    if (!y) {
+      y = today.getFullYear();
+      if (new Date(y, b.mo - 1, b.d) < new Date(today.getTime() - 60 * 864e5)) y++;
+    }
+    const r = { id: '', date: y + '-' + pad(b.mo) + '-' + pad(b.d), from: '', to: '', rent: 0, cleaning: 0, bartender: 0,
+      name: '', phone: '', depositPaid: false, depositSum: 0, contract: false, note: '' };
+    const notes = []; let moneyDone = false;
+    for (const l of b.lines) {
+      let m;
+      if ((m = l.match(/(\d{1,2})[:.](\d{2})\s*(?:до|-|–|—)\s*(\d{1,2})[:.](\d{2})/i))) {
+        r.from = pad(+m[1]) + ':' + m[2]; r.to = pad(+m[3]) + ':' + m[4];
+      } else if (/^залог/i.test(l)) {
+        r.depositPaid = l.includes('✅');
+        const a = l.replace(/\*.*$/, '').match(/\d[\d'’ ]*\d|\d/);
+        if (a) r.depositSum = num(a[0]);
+        const n = l.match(/\*\s*(.+)$/); if (n) notes.push(n[1].trim());
+      } else if (/^договор/i.test(l)) {
+        r.contract = l.includes('✅');
+        const n = l.match(/\*\s*(.+)$/); if (n) notes.push(n[1].trim());
+      } else if (!moneyDone && (/убор|бармен|руб/i.test(l) || /^\d{1,7}(?:['’ ]\d{3})*\s*(\+|$)/.test(l))) {
+        moneyDone = true;
+        for (const part of l.split('+')) {
+          const nm = part.match(/\d[\d'’ ]*/); if (!nm) continue;
+          const v = num(nm[0]);
+          if (/убор/i.test(part)) r.cleaning += v;
+          else if (/бармен/i.test(part)) r.bartender += v;
+          else r.rent += v;
+        }
+      } else if (!r.phone && /(\+?\d[\d\s\-()]{8,}\d)/.test(l)) {
+        const pm = l.match(/(\+?\d[\d\s\-()]{8,}\d)/);
+        let d = pm[1].replace(/\D/g, '');
+        if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1);
+        if (d.length === 10) d = '7' + d;
+        r.phone = d;
+        r.name = l.replace(pm[1], '').replace(/[,:;–—-]+\s*$/, '').trim();
+      } else {
+        notes.push(l);
+      }
+    }
+    r.note = notes.join('; ');
+    out.push(r);
+  }
+  return out;
+}
+/*PARSER_END*/
+
+/* ---------- данные ---------- */
+function loadCache() {
+  try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if (c) bookings = c; } catch (e) {}
+}
+function saveCache() {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(bookings)); } catch (e) {}
+}
+
+async function api(body) {
+  const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(Object.assign({ initData }, body)) });
+  return handle(await res.json());
+}
+function handle(j) {
+  if (!j.ok) {
+    if (j.denied) { denied = j.userId; render(); }
+    throw new Error(j.error || 'Ошибка сервера');
+  }
+  return j;
+}
+
+async function refresh(silent) {
+  if (!apiReady) return;
+  try {
+    const res = await fetch(`${API_URL}?action=list&initData=${encodeURIComponent(initData)}`);
+    const j = handle(await res.json());
+    bookings = j.bookings; saveCache(); denied = null;
+    $('banner').innerHTML = '';
+    render();
+  } catch (e) {
+    if (!silent || !bookings.length) $('banner').innerHTML = `<div class="banner">${esc(e.message)}. Показаны сохранённые данные.</div>`;
+  }
+}
+
+async function commit(changed, removedId) {
+  // меняем сразу на экране, потом отправляем
+  if (removedId) bookings = bookings.filter(b => b.id !== removedId);
+  for (const c of changed || []) {
+    const i = bookings.findIndex(b => b.id === c.id);
+    if (i >= 0) bookings[i] = c; else bookings.push(c);
+  }
+  saveCache(); render();
+  if (!apiReady) return toast('Демо: сохранено только на этом телефоне');
+  try {
+    const j = removedId ? await api({ action: 'delete', id: removedId }) : await api({ action: 'save', bookings: changed });
+    bookings = j.bookings; saveCache(); render(); toast('Сохранено');
+  } catch (e) {
+    toast('Не сохранилось: ' + e.message);
+    refresh(true);
+  }
+}
+
+/* ---------- отрисовка ---------- */
+function render() {
+  const v = $('view');
+  $('fab').style.display = denied ? 'none' : '';
+  if (denied) {
+    v.innerHTML = `<div class="center"><h2>Нет доступа</h2><p class="sub">Отправьте этот номер тому, кто настраивает приложение:</p><p style="font-size:26px;font-weight:800">${esc(denied)}</p></div>`;
+    return;
+  }
+  if (!apiReady) $('banner').innerHTML = '<div class="banner">Демо-режим: приложение ещё не подключено к таблице, данные хранятся только на этом телефоне.</div>';
+  if (tab === 'list') v.innerHTML = renderList();
+  else if (tab === 'cal') v.innerHTML = renderCal();
+  else v.innerHTML = renderSum();
+  v.insertAdjacentHTML('beforeend', `<div class="ver">версия ${APP_VERSION}</div>`);
+}
+
+function card(b) {
+  const tel = String(b.phone || '').replace(/\D/g, '');
+  return `<div class="card" data-id="${esc(b.id)}">
+    <div class="row"><span class="time">${esc(timeRange(b))}</span><span class="sum">${money(total(b))}</span></div>
+    <div class="name">${esc(b.name || 'Без имени')}</div>
+    <div class="sub">${money(b.rent)} аренда${b.cleaning ? ' + ' + money(b.cleaning) + ' уборка' : ''}${b.bartender ? ' + ' + money(b.bartender) + ' бармен' : ''}</div>
+    ${b.note ? `<div class="sub">📝 ${esc(b.note)}</div>` : ''}
+    <div class="chips">
+      <button class="chip ${b.depositPaid ? 'ok' : ''}" data-tog="depositPaid" data-id="${esc(b.id)}">Залог ${b.depositPaid ? '✓' : '✗'}</button>
+      <button class="chip ${b.contract ? 'ok' : ''}" data-tog="contract" data-id="${esc(b.id)}">Договор ${b.contract ? '✓' : '✗'}</button>
+    </div>
+    <div class="act">
+      ${tel ? `<a href="tel:+${tel}">Позвонить</a><a href="https://wa.me/${tel}" target="_blank">WhatsApp</a>` : ''}
+      <button data-edit="${esc(b.id)}">Изменить</button>
+    </div>
+  </div>`;
+}
+
+function renderList() {
+  const t = todayIso();
+  const up = sorted(bookings.filter(b => b.date >= t));
+  const past = sorted(bookings.filter(b => b.date < t)).reverse();
+  let h = '';
+  if (!up.length) h += '<div class="empty">Ближайших броней нет</div>';
+  let last = '';
+  for (const b of up) {
+    if (b.date !== last) { last = b.date; h += `<div class="day-h ${b.date === t ? 'today' : ''}">${dayLabel(b.date)}</div>`; }
+    h += card(b);
+  }
+  if (past.length) {
+    h += `<button class="link" id="pastBtn">${showPast ? 'Скрыть прошедшие' : 'Показать прошедшие (' + past.length + ')'}</button>`;
+    if (showPast) { last = ''; for (const b of past) { if (b.date !== last) { last = b.date; h += `<div class="day-h">${dayLabel(b.date)}</div>`; } h += card(b); } }
+  }
+  return h;
+}
+
+function renderCal() {
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const first = (new Date(y, m, 1).getDay() + 6) % 7;
+  const days = new Date(y, m + 1, 0).getDate();
+  const t = todayIso();
+  let h = `<div class="cal-nav"><button id="cPrev">‹</button><b>${MONTHS[m]} ${y}</b><button id="cNext">›</button></div><div class="grid">`;
+  ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => h += `<div class="dow">${d}</div>`);
+  for (let i = 0; i < first; i++) h += '<div class="cell out"></div>';
+  for (let d = 1; d <= days; d++) {
+    const s = y + '-' + pad(m + 1) + '-' + pad(d);
+    const bs = bookings.filter(b => b.date === s);
+    const bad = bs.some(b => !b.depositPaid || !b.contract);
+    h += `<button class="cell ${bs.length ? 'has' : ''} ${s === t ? 'today' : ''} ${s === calSel ? 'sel' : ''}" data-day="${s}">${d}${bs.length ? `<span class="dot ${bad ? 'bad' : ''}"></span>` : ''}</button>`;
+  }
+  h += '</div><div class="sub" style="margin-top:8px">Красная точка — не получен залог или нет договора</div>';
+  if (calSel) {
+    const bs = sorted(bookings.filter(b => b.date === calSel));
+    h += `<div class="day-h">${dayLabel(calSel)}</div>`;
+    h += bs.length ? bs.map(card).join('') : `<div class="card"><div class="sub">Свободно</div><button class="btn" data-add="${calSel}">Добавить бронь на эту дату</button></div>`;
+  }
+  return h;
+}
+
+function renderSum() {
+  const y = sumMonth.getFullYear(), m = sumMonth.getMonth();
+  const pre = y + '-' + pad(m + 1);
+  const bs = sorted(bookings.filter(b => b.date.startsWith(pre)));
+  const sum = k => bs.reduce((a, b) => a + (b[k] || 0), 0);
+  const noDep = bs.filter(b => !b.depositPaid), noCon = bs.filter(b => !b.contract);
+  let h = `<div class="cal-nav"><button id="sPrev">‹</button><b>${MONTHS[m]} ${y}</b><button id="sNext">›</button></div>
+  <div class="card">
+    <div class="stat"><span>Броней</span><b>${bs.length}</b></div>
+    <div class="stat"><span>Аренда</span><b>${money(sum('rent'))}</b></div>
+    <div class="stat"><span>Уборка</span><b>${money(sum('cleaning'))}</b></div>
+    <div class="stat"><span>Бармен</span><b>${money(sum('bartender'))}</b></div>
+    <div class="stat big"><span>Всего</span><span>${money(sum('rent') + sum('cleaning') + sum('bartender'))}</span></div>
+  </div>`;
+  const list = (title, arr) => arr.length ? `<div class="day-h">${title}</div><div class="card">${arr.map(b => `<div class="stat" data-edit="${esc(b.id)}"><span>${parseIso(b.date).getDate()} ${MONTHS_G[m]} · ${esc(b.name || '—')}</span><span class="sub">${esc(fmtPhone(b.phone))}</span></div>`).join('')}</div>` : '';
+  h += list('Нет залога', noDep) + list('Нет договора', noCon);
+  if (!noDep.length && !noCon.length && bs.length) h += '<div class="empty">Залоги и договоры все в порядке</div>';
+  return h;
+}
+
+/* ---------- шторка ---------- */
+function openSheet(html) { $('sheet').innerHTML = html; $('bg').classList.add('on'); $('sheet').scrollTop = 0; }
+function closeSheet() { $('bg').classList.remove('on'); }
+
+function addMenu(date) {
+  openSheet(`<h2>Новая бронь</h2>
+    <button class="btn" id="mPaste">Вставить текст из чата</button>
+    <button class="btn sec" id="mManual">Заполнить вручную</button>
+    <button class="btn sec" id="mClose">Отмена</button>`);
+  $('mPaste').onclick = pasteSheet;
+  $('mManual').onclick = () => editSheet(null, date);
+  $('mClose').onclick = closeSheet;
+}
+
+function pasteSheet() {
+  openSheet(`<h2>Вставьте текст из чата</h2>
+    <div class="sub">Можно сразу весь список или одну бронь.</div>
+    <textarea id="pText" placeholder="14.11&#10;С 17:00 до 22:00&#10;22'500 + 2'000 уборка&#10;Наталья +7 965 063-18-38&#10;Залог 10 000 ✅&#10;Договор ✅"></textarea>
+    <button class="btn" id="pGo">Разобрать</button>
+    <button class="btn sec" id="pBack">Назад</button>`);
+  $('pBack').onclick = () => addMenu();
+  $('pGo').onclick = () => {
+    const found = parseBookings($('pText').value);
+    if (!found.length) return toast('Не нашёл ни одной брони. Нужна строка с датой, например 14.11');
+    previewSheet(found);
+  };
+}
+
+const FIELDS = ['from','to','rent','cleaning','bartender','name','phone','depositPaid','depositSum','contract','note'];
+function previewSheet(found) {
+  const items = found.map(f => {
+    const ex = bookings.find(b => b.date === f.date && b.from === f.from);
+    if (!ex) return { b: f, kind: 'new' };
+    const merged = Object.assign({}, f, { id: ex.id });
+    const same = FIELDS.every(k => String(ex[k]) === String(merged[k]));
+    return { b: merged, kind: same ? 'same' : 'upd' };
+  });
+  const todo = items.filter(i => i.kind !== 'same');
+  openSheet(`<h2>Найдено броней: ${items.length}</h2>
+    <div class="card">${items.map(i => `<div class="pv">
+      <span class="tag ${i.kind}">${i.kind === 'new' ? 'новая' : i.kind === 'upd' ? 'обновить' : 'уже есть'}</span><b>${dayLabel(i.b.date)}</b>
+      <div class="sub">${esc(timeRange(i.b))} · ${money(total(i.b))} · ${esc(i.b.name || 'без имени')}</div>
+      <div class="sub">Залог ${i.b.depositPaid ? '✓' : '✗'} · Договор ${i.b.contract ? '✓' : '✗'}${i.b.phone ? '' : ' · <span style="color:var(--bad)">нет телефона</span>'}</div>
+    </div>`).join('')}</div>
+    ${todo.length ? `<button class="btn" id="pvOk">Сохранить (${todo.length})</button>` : '<div class="sub">Всё это уже есть в приложении.</div>'}
+    <button class="btn sec" id="pvBack">Назад</button>`);
+  $('pvBack').onclick = pasteSheet;
+  if (todo.length) $('pvOk').onclick = () => {
+    todo.forEach(i => { if (!i.b.id) i.b.id = newId(); });
+    closeSheet(); commit(todo.map(i => i.b));
+  };
+}
+
+function editSheet(id, date) {
+  const b = id ? bookings.find(x => x.id === id) : { id: '', date: date || todayIso(), from: '', to: '', rent: 0, cleaning: 0, bartender: 0, name: '', phone: '', depositPaid: false, depositSum: 10000, contract: false, note: '' };
+  if (!b) return;
+  const f = (k, label, type) => `<div><label>${label}</label><input id="f_${k}" type="${type || 'text'}" value="${esc(b[k] || '')}" ${type === 'number' ? 'inputmode="numeric"' : ''}></div>`;
+  openSheet(`<h2>${id ? 'Изменить бронь' : 'Новая бронь'}</h2>
+    ${f('date', 'Дата', 'date')}
+    <div class="two">${f('from', 'С', 'time')}${f('to', 'До', 'time')}</div>
+    <div class="three">${f('rent', 'Аренда', 'number')}${f('cleaning', 'Уборка', 'number')}${f('bartender', 'Бармен', 'number')}</div>
+    ${f('name', 'Имя клиента')}
+    ${f('phone', 'Телефон', 'tel')}
+    ${f('depositSum', 'Сумма залога', 'number')}
+    <div class="tog">
+      <button class="chip ${b.depositPaid ? 'ok' : ''}" id="eDep">Залог ${b.depositPaid ? '✓' : '✗'}</button>
+      <button class="chip ${b.contract ? 'ok' : ''}" id="eCon">Договор ${b.contract ? '✓' : '✗'}</button>
+    </div>
+    <label>Заметка</label><textarea id="f_note" style="min-height:70px">${esc(b.note)}</textarea>
+    <button class="btn" id="eSave">Сохранить</button>
+    <button class="btn sec" id="eCancel">Отмена</button>
+    ${id ? '<button class="btn del" id="eDel">Удалить бронь</button>' : ''}`);
+  let dep = b.depositPaid, con = b.contract;
+  const setChip = (el, on, name) => { el.classList.toggle('ok', on); el.textContent = name + (on ? ' ✓' : ' ✗'); };
+  $('eDep').onclick = () => { dep = !dep; setChip($('eDep'), dep, 'Залог'); };
+  $('eCon').onclick = () => { con = !con; setChip($('eCon'), con, 'Договор'); };
+  $('eCancel').onclick = closeSheet;
+  $('eSave').onclick = () => {
+    const g = k => $('f_' + k).value.trim();
+    if (!g('date')) return toast('Укажите дату');
+    let ph = g('phone').replace(/\D/g, '');
+    if (ph.length === 11 && ph[0] === '8') ph = '7' + ph.slice(1);
+    if (ph.length === 10) ph = '7' + ph;
+    const nb = { id: b.id || newId(), date: g('date'), from: g('from'), to: g('to'),
+      rent: +g('rent') || 0, cleaning: +g('cleaning') || 0, bartender: +g('bartender') || 0,
+      name: g('name'), phone: ph, depositPaid: dep, depositSum: +g('depositSum') || 0, contract: con, note: g('note') };
+    closeSheet(); commit([nb]);
+  };
+  if (id) $('eDel').onclick = () => {
+    if (tg && tg.showConfirm) tg.showConfirm('Удалить эту бронь?', ok => { if (ok) { closeSheet(); commit(null, id); } });
+    else if (confirm('Удалить эту бронь?')) { closeSheet(); commit(null, id); }
+  };
+}
+
+/* ---------- события ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-tog],[data-edit],[data-day],[data-add],#pastBtn,#cPrev,#cNext,#sPrev,#sNext,#fab,#tabs button,#bg');
+  if (!t) return;
+  if (t.id === 'bg') { if (e.target === t) closeSheet(); return; }
+  if (t.dataset.tog) {
+    const b = bookings.find(x => x.id === t.dataset.id); if (!b) return;
+    commit([Object.assign({}, b, { [t.dataset.tog]: !b[t.dataset.tog] })]);
+  } else if (t.dataset.edit) editSheet(t.dataset.edit);
+  else if (t.dataset.day) { calSel = calSel === t.dataset.day ? null : t.dataset.day; render(); }
+  else if (t.dataset.add) editSheet(null, t.dataset.add);
+  else if (t.id === 'pastBtn') { showPast = !showPast; render(); }
+  else if (t.id === 'cPrev') { calMonth.setMonth(calMonth.getMonth() - 1); calSel = null; render(); }
+  else if (t.id === 'cNext') { calMonth.setMonth(calMonth.getMonth() + 1); calSel = null; render(); }
+  else if (t.id === 'sPrev') { sumMonth.setMonth(sumMonth.getMonth() - 1); render(); }
+  else if (t.id === 'sNext') { sumMonth.setMonth(sumMonth.getMonth() + 1); render(); }
+  else if (t.id === 'fab') addMenu(tab === 'cal' ? calSel : null);
+  else if (t.closest('#tabs')) {
+    tab = t.dataset.t;
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === t));
+    render();
+  }
+});
+
+loadCache();
+render();
+refresh(true);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(true); });
+</script>
+</body>
+</html>
