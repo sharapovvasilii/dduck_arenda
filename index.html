@@ -7,21 +7,32 @@
 <link rel="preload" href="fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 @font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/Inter-Regular.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:600;font-style:normal;font-display:swap;src:url("fonts/Inter-SemiBold.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:800;font-style:normal;font-display:swap;src:url("fonts/Inter-ExtraBold.woff2") format("woff2")}
-/* Стиль как в «Фартук · Смена»: светлая тема, карточки, Inter. Акцент — красный из логотипа (#DC0000). */
+/* Вёрстка как в «Фартук · Смена». Цвета — прежние: синий акцент, тема светлая/тёмная по настройке телефона.
+   Все цвета только здесь, по имени. Нужен красный из логотипа — поменять --accent на #dc0000. */
 :root{
-  --bg:#eeefec; --card:#ffffff; --field:#f1f1f0; --line:rgba(0,0,0,.06);
-  --text:#1a1a1a; --text-2:#555555; --hint:#9a9a9a;
-  --accent:#dc0000; --accent-ink:#dc0000; --accent-soft:#fde8e8; --on-color:#ffffff;
-  --dark:#111111;
-  --ok:#2e9e5b; --ok-soft:#e8f5ed; --warn:#e07b1f; --warn-soft:#fff4e5; --err:#d64545; --err-soft:#fbeaea;
+  --bg:#f4f5f7; --card:#ffffff; --field:#eceff3; --line:#e4e6ea;
+  --text:#1b1d21; --text-2:#4a4f57; --hint:#7a8088;
+  --accent:#2f6df6; --accent-ink:#2f6df6; --accent-soft:#e8efff; --on-color:#ffffff;
+  --dark:#1b1d21; --seg-ink:#ffffff;
+  --ok:#1f9d55; --ok-soft:#e3f5ea; --warn:#c77d00; --warn-soft:#fff3dc; --err:#d9382c; --err-soft:#fde8e6;
   --scrim:rgba(0,0,0,.35); --shadow:rgba(0,0,0,.06); --shadow-strong:rgba(0,0,0,.25);
-  color-scheme:light;
+  color-scheme:light dark;
 }
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111316; --card:#1b1e23; --field:#262a31; --line:#2a2e35;
+  --text:#eceef1; --text-2:#b5bac2; --hint:#8c929b;
+  --accent:#5b8cff; --accent-ink:#5b8cff; --accent-soft:#1c2744; --on-color:#0b1020;
+  --dark:#eceef1; --seg-ink:#111316;
+  --ok:#4cc27f; --ok-soft:#14301f; --warn:#e8a73a; --warn-soft:#3a2c10; --err:#ff6b5e; --err-soft:#3a1a17;
+  --scrim:rgba(0,0,0,.6); --shadow:rgba(0,0,0,.3); --shadow-strong:rgba(0,0,0,.5);
+}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 b,strong{font-weight:600}
@@ -41,7 +52,7 @@ h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.02em}
 /* вкладки */
 .seg{display:grid;gap:4px;padding:4px;background:var(--card);border-radius:14px}
 .seg-btn{font:inherit;border:0;border-radius:10px;padding:12px 4px;background:transparent;color:var(--hint)}
-.seg-btn[aria-pressed="true"]{background:var(--dark);color:var(--on-color)}
+.seg-btn[aria-pressed="true"]{background:var(--dark);color:var(--seg-ink)}
 .tabs{grid-template-columns:repeat(3,1fr);margin-bottom:6px;position:sticky;top:6px;z-index:30;box-shadow:0 -6px 0 6px var(--bg),0 4px 12px var(--shadow)}
 
 /* кнопки */
@@ -91,7 +102,7 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .presets{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:4px 0 8px}
 .presets::-webkit-scrollbar{display:none}
 .chip{flex:none;white-space:nowrap;border:0;border-radius:10px;padding:10px 14px;background:var(--card);color:var(--text);font-size:15px}
-.chip[aria-pressed="true"]{background:var(--dark);color:var(--on-color)}
+.chip[aria-pressed="true"]{background:var(--dark);color:var(--seg-ink)}
 .range-row{display:flex;align-items:center;gap:8px}
 .range-row span{color:var(--hint)}
 .range-row input{flex:1;min-width:0;text-align:center}
@@ -146,14 +157,14 @@ textarea.small{min-height:70px}
 .tag.upd{background:var(--warn-soft);color:var(--warn)}
 .tag.same{background:var(--field);color:var(--hint)}
 .center{text-align:center;padding:60px 24px}
-.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%}
 .toast.on{opacity:1}
 </style>
 </head>
 <body>
 <header>
   <h1>Брони помещения</h1>
-  <div class="sub">Дабл Дак</div>
+  <div class="sub">Дабл Дак <span id="sync"></span></div>
 </header>
 <div id="banner"></div>
 <div class="seg tabs" id="tabs">
@@ -169,16 +180,21 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'PASTE_APPS_SCRIPT_URL_HERE';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-14.4';
+const APP_VERSION = '2026-11-14.6';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
 if (tg) {
-  try { tg.ready(); tg.expand(); tg.setHeaderColor('#eeefec'); tg.setBackgroundColor('#eeefec'); } catch (e) {}
+  try { tg.ready(); tg.expand(); const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(); tg.setHeaderColor(bg); tg.setBackgroundColor(bg); } catch (e) {}
 }
 const initData = tg ? tg.initData : '';
 const apiReady = !API_URL.startsWith('PASTE');
-const CACHE_KEY = 'broni_cache_v1';
+let uid = 'x';
+try { uid = String((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'x'); } catch (e) {}
+const CACHE_KEY = 'broni-cache-v2-' + uid;   // свой кэш у каждого пользователя
+let loaded = false;        // true, когда есть данные (из кэша или с сервера)
+let serverVersion = '';
+let lastFetch = 0;
 
 let bookings = [];
 let tab = 'list';
@@ -312,10 +328,13 @@ function parseBookings(text, todayStr) {
 
 /* ---------- данные ---------- */
 function loadCache() {
-  try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if (c) bookings = c; } catch (e) {}
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (c && Array.isArray(c.list)) { bookings = c.list; serverVersion = c.sv || ''; loaded = true; }
+  } catch (e) {}
 }
 function saveCache() {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify(bookings)); } catch (e) {}
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ list: bookings, sv: serverVersion, t: Date.now() })); } catch (e) {}
 }
 
 async function api(body) {
@@ -330,22 +349,25 @@ function handle(j) {
   }
   return j;
 }
-function applyServer(list) { bookings = list; saveCache(); renderAll(); }
+function applyServer(list, sv) { bookings = list; loaded = true; if (sv) serverVersion = sv; saveCache(); renderAll(); }
 
 async function refresh(silent) {
   if (!apiReady) return;
   const m = mut;
+  lastFetch = Date.now();
+  setSync(true);
   try {
     const res = await fetch(`${API_URL}?action=list&initData=${encodeURIComponent(initData)}`);
     const j = handle(await res.json());
     if (m !== mut || pending > 0) return;   // за время загрузки что-то поменяли — старый ответ не применяем
     denied = null;
     $('banner').innerHTML = '';
-    applyServer(j.bookings);
+    applyServer(j.bookings, j.version);
   } catch (e) {
-    if (!silent || !bookings.length) $('banner').innerHTML = `<div class="banner">${esc(e.message)}. Показаны сохранённые данные.</div>`;
-  }
+    if (!silent || !loaded) $('banner').innerHTML = `<div class="banner">${esc(e.message)}. Показаны сохранённые данные.</div>`;
+  } finally { setSync(false); }
 }
+function setSync(on) { const el = $('sync'); if (el) el.textContent = on ? 'обновляю…' : ''; }
 
 async function commit(changed, removedId) {
   mut++; pending++;
@@ -359,7 +381,7 @@ async function commit(changed, removedId) {
   try {
     const j = removedId ? await api({ action: 'delete', id: removedId }) : await api({ action: 'save', bookings: changed });
     pending--;
-    if (pending === 0) applyServer(j.bookings);
+    if (pending === 0) applyServer(j.bookings, j.version);
     toast('Сохранено');
   } catch (e) {
     pending--;
@@ -417,8 +439,9 @@ function render() {
     return;
   }
   if (!apiReady) $('banner').innerHTML = '<div class="banner">Демо-режим: приложение ещё не подключено к таблице, данные хранятся только на этом телефоне.</div>';
+  if (!loaded && apiReady) { v.innerHTML = '<div class="loading-note">Загружаю брони…</div>'; return; }
   v.innerHTML = tab === 'list' ? renderList() : tab === 'cal' ? renderCal() : renderRev();
-  v.insertAdjacentHTML('beforeend', `<div class="ver">версия ${APP_VERSION}</div>`);
+  v.insertAdjacentHTML('beforeend', `<div class="ver">версия ${APP_VERSION}${serverVersion ? ' · сервер ' + serverVersion : ''}</div>`);
   if (tab === 'rev') bindRev();
 }
 
@@ -709,7 +732,7 @@ document.addEventListener('click', e => {
 loadCache();
 render();
 refresh(true);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(true); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastFetch > 20000) refresh(true); });
 </script>
 </body>
 </html>
