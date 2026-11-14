@@ -21,6 +21,7 @@
   --text:#1b1d21; --text-2:#4a4f57; --hint:#7a8088;
   --accent:#2f6df6; --accent-ink:#2f6df6; --accent-soft:#e8efff; --on-color:#ffffff;
   --dark:#1b1d21; --seg-ink:#ffffff;
+  --fab:#78bf33; --fab-ink:#0f2200;   /* круглая кнопка «+» — салатово-зелёный, между S7 и мятным */
   --ok:#1f9d55; --ok-soft:#e3f5ea; --warn:#c77d00; --warn-soft:#fff3dc; --err:#d9382c; --err-soft:#fde8e6;
   --scrim:rgba(0,0,0,.35); --shadow:rgba(0,0,0,.06); --shadow-strong:rgba(0,0,0,.25);
   color-scheme:light dark;
@@ -30,6 +31,7 @@
   --text:#eceef1; --text-2:#b5bac2; --hint:#8c929b;
   --accent:#5b8cff; --accent-ink:#5b8cff; --accent-soft:#1c2744; --on-color:#0b1020;
   --dark:#eceef1; --seg-ink:#111316;
+  --fab:#78bf33; --fab-ink:#0f2200;
   --ok:#4cc27f; --ok-soft:#14301f; --warn:#e8a73a; --warn-soft:#3a2c10; --err:#ff6b5e; --err-soft:#3a1a17;
   --scrim:rgba(0,0,0,.6); --shadow:rgba(0,0,0,.3); --shadow-strong:rgba(0,0,0,.5);
 }}
@@ -63,7 +65,7 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .btn-light{background:var(--field);color:var(--accent-ink);margin-top:8px}
 .btn-del{background:var(--field);color:var(--err);margin-top:8px}
 .btn.pending{opacity:.8}
-.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:62px;height:62px;border-radius:50%;border:0;background:var(--accent);color:var(--on-color);font-size:34px;line-height:1;font-weight:400;padding:0 0 3px;box-shadow:0 4px 14px var(--shadow-strong);transition:transform .08s}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:62px;height:62px;border-radius:50%;border:0;background:var(--fab);color:var(--fab-ink);font-size:34px;line-height:1;font-weight:400;padding:0 0 3px;box-shadow:0 4px 14px var(--shadow-strong);transition:transform .08s}
 .fab:active{transform:scale(.93);opacity:1}
 
 /* карточка брони */
@@ -180,7 +182,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-14.7';
+const APP_VERSION = '2026-11-14.10';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
