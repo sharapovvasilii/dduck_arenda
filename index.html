@@ -29,6 +29,7 @@
   --sheet:rgba(255,250,245,.78); --glass-border:rgba(255,255,255,.85); --glass-hi:rgba(255,255,255,.9); --glass-border-nav:rgba(255,255,255,.18);
   --glass-shadow:0 10px 30px rgba(120,70,30,.14);
   --nav-bg:rgba(28,20,16,.74); --nav-ink:#f6efe9; --nav-btn:rgba(255,255,255,.12);
+  --bad:#c8205a; --bad-soft:rgba(214,40,90,.20); --tile:rgba(255,255,255,.72); --tile-border:rgba(255,255,255,.95);
   --hero-a:rgba(255,196,130,.95); --hero-b:rgba(255,120,60,.9); --hero-ink:#2b1004;
   --blob1:rgba(255,170,70,.50); --blob2:rgba(255,110,60,.28); --blob3:rgba(255,205,150,.50);
   color-scheme:light dark;
@@ -46,6 +47,7 @@
   --sheet:rgba(34,26,22,.80); --glass-border:rgba(255,255,255,.11); --glass-hi:rgba(255,255,255,.13); --glass-border-nav:rgba(255,255,255,.14);
   --glass-shadow:0 10px 30px rgba(0,0,0,.45);
   --nav-bg:rgba(44,34,29,.72); --nav-ink:#f6efe9; --nav-btn:rgba(255,255,255,.10);
+  --bad:#ff7aa6; --bad-soft:rgba(255,90,140,.24); --tile:rgba(255,255,255,.14); --tile-border:rgba(255,255,255,.28);
   --hero-a:rgba(255,150,50,.55); --hero-b:rgba(210,60,20,.6); --hero-ink:#ffffff;
   --blob1:rgba(255,140,30,.28); --blob2:rgba(215,80,20,.22); --blob3:rgba(255,120,40,.17);
 }}
@@ -71,8 +73,8 @@ h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.02em}
 .ver{text-align:center;color:var(--hint);font-size:12px;margin-top:20px}
 
 /* нижняя панель: тёмная таблетка, выбранная вкладка с подписью */
-.navpill{position:fixed;left:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;display:flex;gap:2px;padding:7px;border-radius:999px;background:var(--nav-bg);border:1px solid var(--glass-border-nav);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 8px 24px var(--shadow-strong),inset 0 1px 0 rgba(255,255,255,.14)}
-.seg-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;min-width:48px;padding:0 13px;border:0;border-radius:999px;color:var(--nav-ink);font-size:14px;font-weight:600;background:var(--nav-btn)}
+.navpill{position:fixed;left:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;display:flex;gap:4px;padding:7px;border-radius:24px;background:var(--nav-bg);border:1px solid var(--glass-border-nav);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 8px 24px var(--shadow-strong),inset 0 1px 0 rgba(255,255,255,.14)}
+.seg-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;min-width:48px;padding:0 13px;border:0;border-radius:17px;color:var(--nav-ink);font-size:14px;font-weight:600;background:var(--nav-btn)}
 .seg-btn svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .seg-btn span{display:none}
 .seg-btn[aria-pressed="true"]{background:var(--grad);color:#fff;box-shadow:0 4px 14px var(--glow),inset 0 1px 0 rgba(255,255,255,.4)}
@@ -81,12 +83,12 @@ h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.02em}
 /* кнопки */
 button{font:inherit;transition:opacity .15s ease-out}
 button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
-.btn{display:block;width:100%;border:0;border-radius:999px;padding:16px;background:var(--grad);color:#fff;box-shadow:0 6px 18px var(--glow),inset 0 1px 0 rgba(255,255,255,.4);font-weight:600;transition:transform .08s,opacity .08s}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;background:var(--grad);color:#fff;box-shadow:0 6px 18px var(--glow),inset 0 1px 0 rgba(255,255,255,.4);font-weight:600;transition:transform .08s,opacity .08s}
 .btn:active{transform:scale(.97);opacity:.85}
 .btn-light{background:var(--field);color:var(--accent-ink);margin-top:8px;box-shadow:inset 0 1px 0 var(--glass-hi);border:1px solid var(--glass-border);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .btn-del{background:var(--field);color:var(--err);margin-top:8px;box-shadow:inset 0 1px 0 var(--glass-hi);border:1px solid var(--glass-border)}
 .btn.pending{opacity:.8}
-.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:62px;height:62px;border-radius:50%;border:0;background:var(--fab);color:var(--fab-ink);font-size:34px;line-height:1;font-weight:400;padding:0 0 3px;box-shadow:0 8px 22px var(--glow),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .08s}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:62px;height:62px;border-radius:22px;border:0;background:var(--fab);color:var(--fab-ink);font-size:34px;line-height:1;font-weight:400;padding:0 0 3px;box-shadow:0 8px 22px var(--glow),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .08s}
 .fab:active{transform:scale(.93);opacity:1}
 
 /* карточка брони */
@@ -103,10 +105,10 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .bk .meta{color:var(--hint);font-size:12px;margin-top:2px}
 .bk .meta.nt{color:var(--text-2);font-size:14px}
 .marks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.mark{border:0;border-radius:999px;padding:11px 8px;font-weight:600;font-size:15px;background:var(--err-soft);color:var(--err)}
-.mark.ok{background:var(--ok-soft);color:var(--ok)}
+.mark{border:1px solid var(--glass-border);border-radius:14px;padding:12px 8px;font-weight:600;font-size:15px;background:var(--field);box-shadow:inset 0 1px 0 var(--glass-hi);color:var(--err)}
+.mark.ok{color:var(--ok)}
 .acts{display:flex;gap:8px;margin-top:8px}
-.acts a,.acts button{flex:1;text-align:center;text-decoration:none;border:1px solid var(--glass-border);background:var(--field);box-shadow:inset 0 1px 0 var(--glass-hi);border-radius:999px;padding:12px 4px;font-size:14px;font-weight:600;color:var(--accent-ink)}
+.acts a,.acts button{flex:1;text-align:center;text-decoration:none;border:1px solid var(--glass-border);background:var(--field);box-shadow:inset 0 1px 0 var(--glass-hi);border-radius:14px;padding:12px 4px;font-size:14px;font-weight:600;color:var(--accent-ink)}
 
 /* нажатие: класс .pressed ставится сразу при касании (в том числе во время прокрутки), :active на телефоне для этого не годится */
 button,.acts a,.bk{transition:transform .2s ease-out,opacity .2s ease-out}
@@ -118,37 +120,34 @@ button,.acts a,.bk{transition:transform .2s ease-out,opacity .2s ease-out}
 
 /* календарь: два месяца, как на втором скрине — тёмно-красные карточки, цифры без рамок, сегодня — белый круг */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
-.cal-nav b{font-size:16px;font-weight:800}
-.cal-nav button{border:1px solid var(--glass-border);background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--glass-shadow);width:44px;height:44px;border-radius:50%;font-size:22px;color:var(--text)}
+.cal-nav b{font-size:14px;font-weight:400;color:var(--text-2)}
+.cal-nav button{border:1px solid var(--glass-border);background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--glass-shadow);width:44px;height:44px;border-radius:14px;font-size:22px;color:var(--text)}
 .mon{padding:20px 14px 14px;border-radius:28px}
 .mon-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 12px;margin-bottom:6px;border-bottom:1px solid var(--line)}
 .mon-h b{font-size:32px;font-weight:800;letter-spacing:-.02em;text-transform:capitalize}
 .mon-h span{font-size:20px;font-weight:600;color:var(--hint)}
 .grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px}
 .dow{font-size:14px;font-weight:600;color:var(--hint);text-align:center;padding:8px 0 10px}
-.cell{width:42px;height:42px;justify-self:center;border:0;border-radius:50%;background:transparent;position:relative;font-weight:600;font-size:17px;color:var(--text);padding:0}
+.cell{width:42px;height:42px;justify-self:center;border:1px solid transparent;border-radius:13px;background:transparent;position:relative;font-weight:600;font-size:17px;color:var(--text);padding:0}
 .cell.out{visibility:hidden}
 .cell.past{color:var(--hint);font-weight:400}
-.cell.has{background:var(--accent-soft);color:var(--accent-ink);font-weight:800;box-shadow:inset 0 0 0 1px var(--accent-soft)}
-.cell.has.pastb{background:rgba(125,125,135,.28);color:var(--text-2);font-weight:600;box-shadow:inset 0 0 0 1px rgba(125,125,135,.25)}
-.cell.today{background:var(--grad);color:#fff;font-weight:800;box-shadow:0 4px 14px var(--glow),inset 0 1px 0 rgba(255,255,255,.4)}
-.cell .dot{position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--ok)}
-.cell .dot.bad{background:var(--err)}
-.cell.today .dot{background:#fff}
-.cell.today .dot.bad{background:#fff;box-shadow:0 0 0 1.5px var(--err)}
+.cell.has{background:var(--accent-soft);color:var(--accent-ink);font-weight:800;border-color:var(--accent-soft)}
+.cell.has.bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad-soft)}
+.cell.has.pastb{background:rgba(125,125,135,.26);color:var(--text-2);font-weight:600;border-color:rgba(125,125,135,.22)}
+.cell.has.pastb.bad{color:var(--bad);border-color:var(--bad-soft)}
+.cell.today{border-color:var(--tile-border);box-shadow:0 3px 12px var(--shadow-strong),inset 0 1px 0 var(--glass-hi);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.cell.today:not(.has){background:var(--tile);font-weight:800}
 .legend{color:var(--hint);font-size:12px;margin:2px 12px}
 
 /* выручка */
 .presets{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:4px 0 8px}
 .presets::-webkit-scrollbar{display:none}
-.chip{flex:none;white-space:nowrap;border:1px solid var(--glass-border);border-radius:999px;padding:10px 16px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:var(--card);color:var(--text);font-size:15px}
+.chip{flex:none;white-space:nowrap;border:1px solid var(--glass-border);border-radius:14px;padding:10px 16px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:var(--card);color:var(--text);font-size:15px}
 .chip[aria-pressed="true"]{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 4px 14px var(--glow)}
 .range-row{display:flex;align-items:center;gap:8px}
 .range-row span{color:var(--hint)}
 .range-row input{flex:1;min-width:0;text-align:center}
-.hero{background:linear-gradient(150deg,var(--hero-a),var(--hero-b));border-color:rgba(255,255,255,.45);color:var(--hero-ink)}
-.hero .note{color:var(--hero-ink);opacity:.75}
-.hero .cmp{color:var(--hero-ink)}
+.hero{background:linear-gradient(150deg,rgba(255,170,80,.22),rgba(255,100,50,.10))}
 .big{font-size:26px;font-weight:800;letter-spacing:-.02em;margin:2px 0}
 .cmp{font-size:14px;font-weight:600}
 .cmp.up{color:var(--ok)} .cmp.down{color:var(--err)}
@@ -195,12 +194,12 @@ textarea.small{min-height:70px}
 .two>div,.three>div{min-width:0}
 .pv{border-top:1px solid var(--line);padding:10px 0}
 .pv:first-child{border:0}
-.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;margin-right:6px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:8px;margin-right:6px}
 .tag.new{background:var(--ok-soft);color:var(--ok)}
 .tag.upd{background:var(--warn-soft);color:var(--warn)}
 .tag.same{background:var(--field);color:var(--hint)}
 .center{text-align:center;padding:60px 24px}
-.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--nav-bg);color:#fff;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border-nav);padding:11px 18px;border-radius:999px;font-size:14px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--nav-bg);color:#fff;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border-nav);padding:11px 18px;border-radius:16px;font-size:14px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%}
 .toast.on{opacity:1}
 </style>
 </head>
@@ -225,7 +224,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.4';
+const APP_VERSION = '2026-11-16.5';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -574,18 +573,19 @@ function monthHtml(y, m) {
     const s = y + '-' + pad(m + 1) + '-' + pad(d);
     const bs = bookings.filter(b => b.date === s);
     const bad = bs.some(b => !b.depositPaid || !b.contract);
-    h += `<button class="cell ${bs.length ? 'has' : ''} ${s === t ? 'today' : ''} ${s < t && !bs.length ? 'past' : ''} ${s < t && bs.length ? 'pastb' : ''}" data-day="${s}">${d}${bs.length ? `<span class="dot ${bad ? 'bad' : ''}"></span>` : ''}</button>`;
+    h += `<button class="cell ${bs.length ? 'has' : ''} ${bs.length && bad ? 'bad' : ''} ${s === t ? 'today' : ''} ${s < t && !bs.length ? 'past' : ''} ${s < t && bs.length ? 'pastb' : ''}" data-day="${s}">${d}</button>`;
   }
   return h + '</div></div>';
 }
 function renderCal() {
   const a = new Date(calStart), b = new Date(a.getFullYear(), a.getMonth() + 1, 1);
+  const cap = x => x[0].toUpperCase() + x.slice(1);
   const title = a.getFullYear() === b.getFullYear()
-    ? `${MONTHS_S[a.getMonth()]} – ${MONTHS_S[b.getMonth()]} ${a.getFullYear()}`
-    : `${MONTHS_S[a.getMonth()]} ${a.getFullYear()} – ${MONTHS_S[b.getMonth()]} ${b.getFullYear()}`;
+    ? `${cap(MONTHS[a.getMonth()])} – ${cap(MONTHS[b.getMonth()])} ${a.getFullYear()}`
+    : `${cap(MONTHS[a.getMonth()])} ${a.getFullYear()} – ${cap(MONTHS[b.getMonth()])} ${b.getFullYear()}`;
   return `<div class="cal-nav"><button id="cPrev" aria-label="Назад">‹</button><b>${title}</b><button id="cNext" aria-label="Вперёд">›</button></div>`
     + monthHtml(a.getFullYear(), a.getMonth()) + monthHtml(b.getFullYear(), b.getMonth())
-    + '<div class="legend">Оранжевый круг — сегодня, серый — прошедшая бронь. Красная точка — не получен залог или нет договора, зелёная — всё в порядке. Нажмите на день, чтобы открыть.</div>';
+    + '<div class="legend">Окошко — сегодня, оранжевая клетка — бронь, серая — прошедшая, розовая — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
 }
 
 /* ---------- выручка (как в «Фартук · Смена») ---------- */
