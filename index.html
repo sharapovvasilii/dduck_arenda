@@ -264,6 +264,30 @@ header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;
 .cell{width:40px;height:40px;font-weight:400;font-variant-numeric:proportional-nums;letter-spacing:-.03em}
 .cell.today,.cell.today:not(.has),.cell.today.has,.cell.has,.cell.has.pastb,.cell.has.bad{font-weight:400}
 .dow{padding:6px 0 10px}
+
+/* ===== правки: выравнивание по краю текста карточек, размеры шрифтов, цвета кнопок ===== */
+header{padding:2px 18px 14px}
+.rng{margin:2px 18px 10px}
+.day-h{margin-left:18px;margin-right:18px;font-weight:600}
+.sec{margin-left:18px;margin-right:18px}
+.legend{margin:6px 18px}
+.card>.kv{padding:14px 18px}
+.mon{padding:26px 18px 22px}
+.mon-h{padding:0 0 12px}
+.bk .name{font-size:19px}
+.bk .total{font-size:18px}
+.bk .time{font-size:16px}
+.bk .meta{font-size:14px}
+.bk .meta.nt{font-size:15px}
+.card>.kv>div:first-child{font-size:14px}
+.card>.kv>div:first-child small{font-size:14px}
+.cell{font-size:19px}
+.btn-light{color:var(--text-2)}
+.btn-light[data-add]{color:var(--text)}
+/* окно брони: подпись слева, значение справа, по нижней линии текста */
+.sheet .card>.kv{flex-direction:row;justify-content:space-between;align-items:baseline;gap:12px;padding:15px 18px;margin-top:8px}
+.sheet .card>.kv>div:first-child{font-size:16px;color:var(--hint)}
+.sheet .card>.kv>div:last-child{text-align:right}
 </style>
 </head>
 <body>
@@ -287,7 +311,7 @@ header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.13';
+const APP_VERSION = '2026-11-16.14';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -547,7 +571,7 @@ function infoSheet(id) {
   dayOpen = null;
   const tel = String(b.phone || '').replace(/\D/g, '');
   const row = (l, v) => `<div class="kv"><div>${l}</div><div style="text-align:right"><b>${v}</b></div></div>`;
-  const st = (ok, yes, no) => `<span style="color:var(--${ok ? 'ok' : 'err'})">${ok ? yes : no}</span>`;
+  const st = (ok, yes, no) => `<span style="color:var(--${ok ? 'accent-ink' : 'err'})">${ok ? yes : no}</span>`;
   openSheet(`<h2>${esc(b.name || 'Без имени')}</h2>
     <div class="note" style="margin-top:0">${dayLabel(b.date)} ${parseIso(b.date).getFullYear()}</div>
     <div class="card" style="margin-top:12px">
@@ -618,7 +642,7 @@ function renderList() {
     h += card(b);
   }
   if (past.length) {
-    h += `<button class="btn btn-light" id="pastBtn">${showPast ? 'Скрыть прошедшие' : 'Показать прошедшие (' + past.length + ')'}</button>`;
+    h += `<button class="btn btn-light" id="pastBtn">${showPast ? 'Скрыть прошедшие' : 'Прошедшие (' + past.length + ')'}</button>`;
     if (showPast) { last = ''; for (const b of past) { if (b.date !== last) { last = b.date; h += `<div class="day-h">${dayLabel(b.date)}</div>`; } h += card(b); } }
   }
   return h;
@@ -686,7 +710,7 @@ function renderRev() {
   const d = calc(f, t);
   const prevTo = isoAdd(f, -1), prevFrom = isoAdd(prevTo, -(d.days - 1));
   const prev = calc(prevFrom, prevTo);
-  h += `<div class="sub" style="margin:2px 12px 8px">${f === t ? dmyFull(f) : dmyFull(f) + ' – ' + dmyFull(t)}</div>`;
+  h += `<div class="sub rng">${f === t ? dmyFull(f) : dmyFull(f) + ' – ' + dmyFull(t)}</div>`;
 
   h += `<div class="card hero"><div class="bk-in"><div class="note" style="margin-top:0">Выручка по броням</div><div class="big">${money(d.rev)}</div>`;
   if (prev.rev > 0) {
@@ -893,7 +917,7 @@ document.addEventListener('click', e => {
 });
 
 /* Нажатие и вибрация срабатывают сразу при касании — и во время прокрутки, когда click не приходит.
-   Если палец поехал (прокрутка) — анимация снимается, вибрации нет. */
+   Вибрация — в момент касания; если палец поехал (прокрутка) — анимация нажатия снимается. */
 const PRESS_SEL = 'button,.acts a,[data-edit],[data-detail],[data-info]';
 let press = null;
 document.addEventListener('touchstart', e => {
@@ -903,6 +927,8 @@ document.addEventListener('touchstart', e => {
   if (!el || el.disabled) return;
   press = { el, x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), moved: false };
   el.classList.add('pressed');
+  const soft = el.closest('.seg-btn,[data-p],[data-day],[data-bar]');
+  haptic(el.id === 'fab' ? 'medium' : soft ? 'select' : 'light');   // сразу при касании, даже если дальше пошла прокрутка
 }, { passive: true });
 document.addEventListener('touchmove', e => {
   if (!press || press.moved) return;
@@ -913,10 +939,6 @@ const endPress = e => {
   if (!press) return;
   const p = press; press = null;
   setTimeout(() => p.el.classList.remove('pressed'), Math.max(0, 110 - (Date.now() - p.t)));
-  if (e.type === 'touchend' && !p.moved) {
-    const soft = p.el.closest('.seg-btn,[data-p],[data-day],[data-bar]');
-    haptic(p.el.id === 'fab' ? 'medium' : soft ? 'select' : 'light');
-  }
 };
 document.addEventListener('touchend', endPress, { passive: true });
 document.addEventListener('touchcancel', endPress, { passive: true });
