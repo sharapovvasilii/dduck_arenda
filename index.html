@@ -363,6 +363,12 @@ h1{margin-left:-1px}
 .hero .note,.note{color:#6b6e77}
 /* бегущая строка периодов: края плавно растворяются */
 .presets{margin:4px -14px 8px;padding:2px 14px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 36px),transparent 100%)}
+
+/* ===== 2026-11-16.20: главные окошки менее прозрачные ===== */
+.bk-in,.mon{background-color:rgba(255,255,255,.74)}
+.card>.kv{background-color:rgba(255,255,255,.66)}
+.sheet{background-color:rgba(255,255,255,.82)}
+.sheet .btn-light{background-color:rgba(255,255,255,.85)}
 </style>
 </head>
 <body>
@@ -387,7 +393,7 @@ h1{margin-left:-1px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.19';
+const APP_VERSION = '2026-11-16.20';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
