@@ -7,6 +7,7 @@
 <link rel="preload" href="fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -15,6 +16,7 @@
 @font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/Inter-Regular.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:500;font-style:normal;font-display:swap;src:url("fonts/Inter-Medium.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:600;font-style:normal;font-display:swap;src:url("fonts/Inter-SemiBold.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-weight:700;font-style:normal;font-display:swap;src:url("fonts/Inter-Bold.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:800;font-style:normal;font-display:swap;src:url("fonts/Inter-ExtraBold.woff2") format("woff2")}
 /* Вёрстка как в «Фартук · Смена». Цвета: серый акцент (оттенки серого), тема светлая/тёмная по настройке телефона.
    Все цвета только здесь, по имени. Другой акцент — поменять --accent, --accent-ink, --accent-soft, --bar. */
@@ -253,6 +255,15 @@ header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;
 .cell.has.bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad-soft)}
 .cell.has.pastb{background:#ececef;color:#7d818b;border-color:transparent}
 .cell.has.pastb.bad{color:var(--bad);border-color:var(--bad-soft)}
+
+/* ===== календарь: плотнее, без жирных дат, название месяца меньше ===== */
+.mon-h b{font-size:26px;font-weight:600}
+.mon-h span{font-size:24px;font-weight:600}
+.mon-h{padding-bottom:12px}
+.grid{row-gap:0}
+.cell{width:38px;height:38px;font-weight:400}
+.cell.today,.cell.today:not(.has),.cell.today.has,.cell.has,.cell.has.pastb,.cell.has.bad{font-weight:400}
+.dow{padding:4px 0 8px}
 </style>
 </head>
 <body>
@@ -276,7 +287,7 @@ header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.11';
+const APP_VERSION = '2026-11-16.12';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
