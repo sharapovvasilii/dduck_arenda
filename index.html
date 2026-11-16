@@ -317,7 +317,27 @@ h1{margin-left:-1px}
 .orb{--s:420px;position:fixed;left:0;top:0;width:var(--s);height:var(--s);border-radius:50%;pointer-events:none;z-index:-1;opacity:.62;will-change:transform;
   background:radial-gradient(circle,rgba(255,86,40,.88) 0%,rgba(255,128,50,.68) 36%,rgba(255,160,70,.30) 58%,rgba(255,185,100,0) 72%)}
 .orb.small{--s:240px;opacity:.7}
-.orb::after{content:"";position:absolute;inset:27%;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:radial-gradient(circle,rgba(255,110,50,.22),rgba(255,150,60,.08))}
+
+/* ===== 2026-11-16.17: прозрачнее, без белых бликов на кнопках, зернистое матовое стекло ===== */
+:root{--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.34'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* окошки: прозрачнее, сильнее размытие */
+.bk-in,.mon{background-color:rgba(255,255,255,.50);-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6)}
+.card>.kv{background-color:rgba(255,255,255,.44);-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6);box-shadow:none}
+.card.bk .bk-in{box-shadow:0 10px 28px rgba(60,60,90,.08)}
+.sheet{background-color:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(34px) saturate(1.6);backdrop-filter:blur(34px) saturate(1.6)}
+.navpill{background-color:rgba(21,21,21,.58)}
+/* кнопки: прозрачные, без белой тени и белой рамки внутри */
+.mark,.mark.ok{background-color:rgba(232,72,28,.68);border:0;box-shadow:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.btn{background-color:rgba(232,72,28,.74);border:0;box-shadow:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.acts a,.acts button{background-color:rgba(120,120,140,.14);border:0;box-shadow:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.btn-light{background-color:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.7);box-shadow:none}
+.chip{background-color:rgba(255,255,255,.42);border:1px solid rgba(255,255,255,.7);box-shadow:none}
+.chip[aria-pressed="true"]{background-color:rgba(232,72,28,.74);border:0}
+.cal-nav button{background-color:rgba(255,255,255,.42);box-shadow:none}
+.seg-btn[aria-pressed="true"]{box-shadow:none;background:rgba(232,72,28,.85)}
+/* зернистость — как у матового стекла */
+.bk-in,.mon,.card>.kv,.sheet,.navpill,.mark,.btn,.acts a,.acts button,.btn-light,.chip,.cal-nav button,.banner{background-image:var(--grain)}
+.chip[aria-pressed="true"],.btn-light[data-add]{background-image:var(--grain)}
 </style>
 </head>
 <body>
@@ -342,7 +362,7 @@ h1{margin-left:-1px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.16';
+const APP_VERSION = '2026-11-16.17';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
