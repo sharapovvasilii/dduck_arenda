@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<title>Брони помещения</title>
+<title>Брони</title>
 <link rel="preload" href="fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
@@ -21,6 +21,7 @@
   --text:#1b1d21; --text-2:#4a4f57; --hint:#7a8088;
   --accent:#4a4f57; --accent-ink:#3a3e45; --accent-soft:#d9dce1; --on-color:#ffffff; --bar:#7d828a;
   --dark:#1b1d21; --seg-ink:#ffffff;
+  --past-bg:#b4b9c1; --past-ink:#3a3e45;   /* прошедшие брони в календаре — серые */
   --fab:#78bf33; --fab-ink:#0f2200;   /* круглая кнопка «+» — салатово-зелёный, между S7 и мятным */
   --ok:#1f9d55; --ok-soft:#e3f5ea; --warn:#c77d00; --warn-soft:#fff3dc; --err:#d9382c; --err-soft:#fde8e6;
   --scrim:rgba(0,0,0,.35); --shadow:rgba(0,0,0,.06); --shadow-strong:rgba(0,0,0,.25);
@@ -31,6 +32,7 @@
   --text:#eceef1; --text-2:#b5bac2; --hint:#8c929b;
   --accent:#c9cdd3; --accent-ink:#d5d8dd; --accent-soft:#3d434b; --on-color:#14161a; --bar:#9aa0a8;
   --dark:#eceef1; --seg-ink:#111316;
+  --past-bg:#4b515a; --past-ink:#c2c7ce;
   --fab:#78bf33; --fab-ink:#0f2200;
   --ok:#4cc27f; --ok-soft:#14301f; --warn:#e8a73a; --warn-soft:#3a2c10; --err:#ff6b5e; --err-soft:#3a1a17;
   --scrim:rgba(0,0,0,.6); --shadow:rgba(0,0,0,.3); --shadow-strong:rgba(0,0,0,.5);
@@ -71,6 +73,7 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 /* карточка брони */
 .day-h{margin:16px 12px 6px;font-size:13px;font-weight:800;color:var(--hint);text-transform:uppercase;letter-spacing:.03em}
 .day-h.today{color:var(--accent-ink)}
+.bk{cursor:pointer}
 .bk .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .bk .time{font-weight:800;font-size:17px}
 .bk .total{font-weight:600}
@@ -82,6 +85,14 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .mark.ok{background:var(--ok-soft);color:var(--ok)}
 .acts{display:flex;gap:8px;margin-top:8px}
 .acts a,.acts button{flex:1;text-align:center;text-decoration:none;border:0;background:var(--field);border-radius:10px;padding:10px 4px;font-size:14px;font-weight:600;color:var(--accent-ink)}
+
+/* нажатие: класс .pressed ставится сразу при касании (в том числе во время прокрутки), :active на телефоне для этого не годится */
+button,.acts a,.bk{transition:transform .2s ease-out,opacity .2s ease-out}
+.pressed{transform:scale(.95)!important;opacity:.6!important;transition:transform .06s ease-out,opacity .06s ease-out!important}
+.cell.pressed{transform:scale(.86)!important}
+.bk.pressed{transform:scale(.985)!important;opacity:.75!important}
+.acts a{display:block}
+.info-note{white-space:pre-wrap;word-break:break-word}
 
 /* календарь: два месяца */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
@@ -95,10 +106,12 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .cell.out{visibility:hidden}
 .cell.past{color:var(--hint);font-weight:400}
 .cell.has{background:var(--fab);color:var(--fab-ink);font-weight:800}
+.cell.has.pastb{background:var(--past-bg);color:var(--past-ink);font-weight:600}
 .cell.today{outline:2px solid var(--text);outline-offset:-2px}
 .cell .dot{position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--ok)}
 .cell .dot.bad{background:var(--err);box-shadow:0 0 0 1.5px #fff}
 .cell.has .dot{background:var(--fab-ink)}
+.cell.has.pastb .dot{background:var(--past-ink)}
 .cell.has .dot.bad{background:var(--err)}
 .legend{color:var(--hint);font-size:12px;margin:2px 12px}
 
@@ -167,7 +180,7 @@ textarea.small{min-height:70px}
 </head>
 <body>
 <header>
-  <h1>Брони помещения</h1>
+  <h1>Брони</h1>
   <div class="sub">Дабл Дак <span id="sync"></span></div>
 </header>
 <div id="banner"></div>
@@ -184,7 +197,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-14.13';
+const APP_VERSION = '2026-11-16.1';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -398,7 +411,7 @@ async function commit(changed, removedId) {
 /* ---------- карточка брони ---------- */
 function card(b) {
   const tel = String(b.phone || '').replace(/\D/g, '');
-  return `<div class="card bk">
+  return `<div class="card bk" data-info="${esc(b.id)}">
     <div class="top"><span class="time">${esc(timeRange(b))}</span><span class="total">${money(total(b))}</span></div>
     <div class="name">${esc(b.name || 'Без имени')}</div>
     <div class="meta">${money(b.rent)} аренда${b.cleaning ? ' + ' + money(b.cleaning) + ' уборка' : ''}${b.bartender ? ' + ' + money(b.bartender) + ' бармен' : ''}</div>
@@ -408,10 +421,65 @@ function card(b) {
       <button class="mark ${b.contract ? 'ok' : ''}" data-tog="contract" data-id="${esc(b.id)}">Договор ${b.contract ? '✓' : '✗'}</button>
     </div>
     <div class="acts">
-      ${tel ? `<a href="tel:+${tel}">Позвонить</a><a href="https://wa.me/${tel}" target="_blank">WhatsApp</a>` : ''}
+      ${tel ? `<a href="tel:+${tel}" data-tel="${tel}">Позвонить</a><a href="https://wa.me/${tel}" data-wa="${tel}">WhatsApp</a>` : ''}
       <button data-edit="${esc(b.id)}">Изменить</button>
     </div>
   </div>`;
+}
+
+function copyText(s) {
+  try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(s).catch(() => {}); return; } } catch (e) {}
+  try { const ta = document.createElement('textarea'); ta.value = s; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); } catch (e) {}
+}
+// Телеграм на некоторых телефонах не открывает tel: — тогда копируем номер и говорим об этом
+function callPhone(tel) {
+  const num = '+' + tel;
+  let left = false;
+  const mark = () => { left = true; };
+  window.addEventListener('blur', mark, { once: true });
+  document.addEventListener('visibilitychange', mark, { once: true });
+  try { window.location.href = 'tel:' + num; } catch (e) {}
+  setTimeout(() => {
+    window.removeEventListener('blur', mark); document.removeEventListener('visibilitychange', mark);
+    if (left) return;
+    copyText(num);
+    toast('Номер ' + fmtPhone(tel) + ' скопирован — вставьте его в звонилку');
+  }, 1200);
+}
+function openWa(tel) {
+  const url = 'https://wa.me/' + tel;
+  try { if (tg && tg.openLink) return tg.openLink(url); } catch (e) {}
+  window.open(url, '_blank');
+}
+
+// Полная информация о брони — по нажатию на карточку
+function infoSheet(id) {
+  const b = bookings.find(x => x.id === id); if (!b) return;
+  dayOpen = null;
+  const tel = String(b.phone || '').replace(/\D/g, '');
+  const row = (l, v) => `<div class="kv"><div>${l}</div><div style="text-align:right"><b>${v}</b></div></div>`;
+  const st = (ok, yes, no) => `<span style="color:var(--${ok ? 'ok' : 'err'})">${ok ? yes : no}</span>`;
+  openSheet(`<h2>${esc(b.name || 'Без имени')}</h2>
+    <div class="note" style="margin-top:0">${dayLabel(b.date)} ${parseIso(b.date).getFullYear()}</div>
+    <div class="card" style="margin-top:12px">
+      ${row('Время', esc(timeRange(b)))}
+      ${row('Телефон', b.phone ? esc(fmtPhone(b.phone)) : 'не указан')}
+    </div>
+    <div class="card">
+      ${row('Аренда', money(b.rent))}
+      ${b.cleaning ? row('Уборка', money(b.cleaning)) : ''}
+      ${b.bartender ? row('Бармен', money(b.bartender)) : ''}
+      ${row('Итого', money(total(b)))}
+    </div>
+    <div class="card">
+      ${row('Залог', st(b.depositPaid, 'получен', 'не получен') + (b.depositSum ? ' · ' + money(b.depositSum) : ''))}
+      ${row('Договор', st(b.contract, 'подписан', 'не подписан'))}
+    </div>
+    ${b.note ? `<div class="card"><div class="note" style="margin-top:0">Заметка</div><div class="info-note">${esc(b.note)}</div></div>` : ''}
+    ${tel ? `<div class="acts"><a href="tel:+${tel}" data-tel="${tel}">Позвонить</a><a href="https://wa.me/${tel}" data-wa="${tel}">WhatsApp</a></div>` : ''}
+    <button class="btn" data-edit="${esc(b.id)}" style="margin-top:12px">Изменить</button>
+    <button class="btn btn-light" data-close="1">Закрыть</button>`);
+  $('sheet').scrollTop = 0;
 }
 
 function askToggle(id, key) {
@@ -479,7 +547,7 @@ function monthHtml(y, m) {
     const s = y + '-' + pad(m + 1) + '-' + pad(d);
     const bs = bookings.filter(b => b.date === s);
     const bad = bs.some(b => !b.depositPaid || !b.contract);
-    h += `<button class="cell ${bs.length ? 'has' : ''} ${s === t ? 'today' : ''} ${s < t && !bs.length ? 'past' : ''}" data-day="${s}">${d}${bs.length ? `<span class="dot ${bad ? 'bad' : ''}"></span>` : ''}</button>`;
+    h += `<button class="cell ${bs.length ? 'has' : ''} ${s === t ? 'today' : ''} ${s < t && !bs.length ? 'past' : ''} ${s < t && bs.length ? 'pastb' : ''}" data-day="${s}">${d}${bs.length ? `<span class="dot ${bad ? 'bad' : ''}"></span>` : ''}</button>`;
   }
   return h + '</div></div>';
 }
@@ -490,7 +558,7 @@ function renderCal() {
     : `${MONTHS_S[a.getMonth()]} ${a.getFullYear()} – ${MONTHS_S[b.getMonth()]} ${b.getFullYear()}`;
   return `<div class="cal-nav"><button id="cPrev" aria-label="Назад">‹</button><b>${title}</b><button id="cNext" aria-label="Вперёд">›</button></div>`
     + monthHtml(a.getFullYear(), a.getMonth()) + monthHtml(b.getFullYear(), b.getMonth())
-    + '<div class="legend">Красная точка — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
+    + '<div class="legend">Серые дни — прошедшие брони. Красная точка — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
 }
 
 /* ---------- выручка (как в «Фартук · Смена») ---------- */
@@ -708,11 +776,12 @@ function editSheet(id, date) {
 /* ---------- события ---------- */
 document.addEventListener('click', e => {
   if (e.target.id === 'bg') { closeSheet(); return; }
-  const t = e.target.closest('button,a,[data-edit],[data-detail],[data-bar]');
+  const t = e.target.closest('button,a,[data-edit],[data-detail],[data-bar],[data-info]');
   if (!t) return;
-  const soft = t.closest('.seg-btn,[data-p],[data-day],[data-bar]');
-  haptic(t.id === 'fab' ? 'medium' : soft ? 'select' : 'light');
-  if (t.dataset.tog) askToggle(t.dataset.id, t.dataset.tog);
+  if (t.dataset.tel) { e.preventDefault(); callPhone(t.dataset.tel); return; }
+  if (t.dataset.wa) { e.preventDefault(); openWa(t.dataset.wa); return; }
+  if (t.dataset.info) infoSheet(t.dataset.info);
+  else if (t.dataset.tog) askToggle(t.dataset.id, t.dataset.tog);
   else if (t.dataset.edit) editSheet(t.dataset.edit);
   else if (t.dataset.day) {
     openDay(t.dataset.day);
@@ -732,6 +801,35 @@ document.addEventListener('click', e => {
     render();
   }
 });
+
+/* Нажатие и вибрация срабатывают сразу при касании — и во время прокрутки, когда click не приходит.
+   Если палец поехал (прокрутка) — анимация снимается, вибрации нет. */
+const PRESS_SEL = 'button,.acts a,[data-edit],[data-detail],[data-info]';
+let press = null;
+document.addEventListener('touchstart', e => {
+  if (press) { press.el.classList.remove('pressed'); press = null; }
+  if (e.touches.length !== 1) return;
+  const el = e.target.closest && e.target.closest(PRESS_SEL);
+  if (!el || el.disabled) return;
+  press = { el, x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now(), moved: false };
+  el.classList.add('pressed');
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (!press || press.moved) return;
+  const tc = e.touches[0];
+  if (Math.abs(tc.clientX - press.x) > 10 || Math.abs(tc.clientY - press.y) > 10) { press.moved = true; press.el.classList.remove('pressed'); }
+}, { passive: true });
+const endPress = e => {
+  if (!press) return;
+  const p = press; press = null;
+  setTimeout(() => p.el.classList.remove('pressed'), Math.max(0, 110 - (Date.now() - p.t)));
+  if (e.type === 'touchend' && !p.moved) {
+    const soft = p.el.closest('.seg-btn,[data-p],[data-day],[data-bar]');
+    haptic(p.el.id === 'fab' ? 'medium' : soft ? 'select' : 'light');
+  }
+};
+document.addEventListener('touchend', endPress, { passive: true });
+document.addEventListener('touchcancel', endPress, { passive: true });
 
 loadCache();
 render();
