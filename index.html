@@ -312,9 +312,16 @@ h1{margin-left:-1px}
 .btn{background:rgba(232,72,28,.92);border:1px solid rgba(255,255,255,.40);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .btn-light{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.85)}
 .cal-nav button{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+
+/* ===== два светящихся шара на фоне (как на скрине), плавно ездят случайно ===== */
+.orb{--s:420px;position:fixed;left:0;top:0;width:var(--s);height:var(--s);border-radius:50%;pointer-events:none;z-index:-1;opacity:.62;will-change:transform;
+  background:radial-gradient(circle,rgba(255,86,40,.88) 0%,rgba(255,128,50,.68) 36%,rgba(255,160,70,.30) 58%,rgba(255,185,100,0) 72%)}
+.orb.small{--s:240px;opacity:.7}
+.orb::after{content:"";position:absolute;inset:27%;border-radius:50%;border:1px solid rgba(255,255,255,.55);background:radial-gradient(circle,rgba(255,110,50,.22),rgba(255,150,60,.08))}
 </style>
 </head>
 <body>
+<div class="orb" id="orb1"></div><div class="orb small" id="orb2"></div>
 <header>
   <div>
     <h1>Брони</h1>
@@ -335,7 +342,7 @@ h1{margin-left:-1px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.15';
+const APP_VERSION = '2026-11-16.16';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -968,6 +975,27 @@ const endPress = e => {
 };
 document.addEventListener('touchend', endPress, { passive: true });
 document.addEventListener('touchcancel', endPress, { passive: true });
+
+/* шары на фоне: каждый плывёт в случайную точку экрана, дошёл — выбирает следующую */
+(function () {
+  const a = $('orb1'), b = $('orb2');
+  if (!a || !b) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
+  function drift(el, size, speed) {
+    let x = rnd(-size * .3, innerWidth - size * .7), y = rnd(-size * .3, innerHeight - size * .7);
+    el.style.transform = `translate(${x}px,${y}px)`;
+    if (!el.animate) return;
+    const go = () => {
+      const nx = rnd(-size * .5, innerWidth - size * .5), ny = rnd(-size * .5, innerHeight - size * .5);
+      const an = el.animate([{ transform: `translate(${x}px,${y}px)` }, { transform: `translate(${nx}px,${ny}px)` }],
+        { duration: rnd(7000, 13000) / speed, easing: 'ease-in-out', fill: 'forwards' });
+      an.onfinish = () => { x = nx; y = ny; el.style.transform = `translate(${x}px,${y}px)`; an.cancel(); go(); };
+    };
+    go();
+  }
+  drift(a, 420, 1); drift(b, 240, 1.4);
+})();
 
 loadCache();
 render();
