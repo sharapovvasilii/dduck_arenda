@@ -17,34 +17,32 @@
 /* Вёрстка как в «Фартук · Смена». Цвета: серый акцент (оттенки серого), тема светлая/тёмная по настройке телефона.
    Все цвета только здесь, по имени. Другой акцент — поменять --accent, --accent-ink, --accent-soft, --bar. */
 :root{
-  --bg:#eceef4; --card:rgba(255,255,255,.58); --field:rgba(110,120,140,.13); --line:rgba(110,120,140,.2);
-  --text:#1b1d21; --text-2:#4a4f57; --hint:#737982;
-  --accent:#4a4f57; --accent-ink:#3a3e45; --accent-soft:rgba(110,120,140,.2); --on-color:#ffffff; --bar:#7d828a;
-  --dark:#1b1d21; --seg-ink:#ffffff;
-  --past-bg:rgba(120,128,142,.38); --past-ink:#3a3e45;   /* прошедшие брони в календаре — серые */
-  --fab:#78bf33; --fab-ink:#0f2200;   /* круглая кнопка «+» */
+  --bg:#efeff4; --card:rgba(255,255,255,.72); --field:rgba(120,120,140,.12); --line:rgba(120,120,140,.18);
+  --text:#121212; --text-2:#4a4a52; --hint:#7d7d86;
+  --accent:#e5481a; --accent-ink:#cf3a0e; --accent-soft:rgba(229,72,26,.14); --on-color:#ffffff; --bar:#f08a5d;
+  --dark:#161616; --seg-ink:#ffffff;
+  --fab:#161616; --fab-ink:#ffffff;   /* круглая кнопка «+» */
   --ok:#1f9d55; --ok-soft:rgba(31,157,85,.14); --warn:#c77d00; --warn-soft:rgba(199,125,0,.16); --err:#d9382c; --err-soft:rgba(217,56,44,.12);
-  --scrim:rgba(20,24,32,.30); --shadow:rgba(0,0,0,.06); --shadow-strong:rgba(0,0,0,.25);
+  --scrim:rgba(20,20,28,.30); --shadow:rgba(0,0,0,.06); --shadow-strong:rgba(0,0,0,.25);
   /* матовое стекло */
-  --sheet:rgba(250,251,253,.86); --glass-border:rgba(255,255,255,.8); --glass-shadow:0 8px 28px rgba(70,80,110,.12);
-  --nav-bg:#1b1d21; --nav-ink:#a9aeb6; --nav-on:#ffffff; --nav-sel:rgba(255,255,255,.17);
-  --blob1:rgba(120,191,51,.30); --blob2:rgba(140,150,255,.30); --blob3:rgba(255,170,120,.28);
-  --av-bg:86%; --av-ink:30%;
+  --sheet:rgba(250,250,253,.88); --glass-border:rgba(255,255,255,.9); --glass-shadow:0 8px 28px rgba(60,60,90,.10);
+  --nav-bg:#161616; --nav-ink:#f0f0f3; --nav-btn:rgba(255,255,255,.12);
+  --hero-a:#ffd1bb; --hero-b:#ff9a6b; --hero-ink:#2a0e03;
+  --blob1:rgba(255,160,120,.28); --blob2:rgba(160,165,255,.22); --blob3:rgba(255,200,170,.22);
   color-scheme:light dark;
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#0e1013; --card:rgba(40,44,52,.52); --field:rgba(255,255,255,.08); --line:rgba(255,255,255,.1);
-  --text:#eceef1; --text-2:#b5bac2; --hint:#8c929b;
-  --accent:#c9cdd3; --accent-ink:#d5d8dd; --accent-soft:rgba(255,255,255,.14); --on-color:#14161a; --bar:#9aa0a8;
-  --dark:#eceef1; --seg-ink:#111316;
-  --past-bg:rgba(255,255,255,.14); --past-ink:#b9bec6;
-  --fab:#78bf33; --fab-ink:#0f2200;
+  --bg:#0d0d10; --card:rgba(44,44,50,.60); --field:rgba(255,255,255,.08); --line:rgba(255,255,255,.1);
+  --text:#f1f1f4; --text-2:#bcbcc4; --hint:#8f8f99;
+  --accent:#ff6a3a; --accent-ink:#ff8a5e; --accent-soft:rgba(255,106,58,.20); --on-color:#ffffff; --bar:#ff8a5e;
+  --dark:#f1f1f4; --seg-ink:#111111;
+  --fab:#f1f1f4; --fab-ink:#111111;
   --ok:#4cc27f; --ok-soft:rgba(76,194,127,.16); --warn:#e8a73a; --warn-soft:rgba(232,167,58,.16); --err:#ff6b5e; --err-soft:rgba(255,107,94,.16);
   --scrim:rgba(0,0,0,.55); --shadow:rgba(0,0,0,.3); --shadow-strong:rgba(0,0,0,.5);
-  --sheet:rgba(28,31,37,.88); --glass-border:rgba(255,255,255,.11); --glass-shadow:0 8px 28px rgba(0,0,0,.4);
-  --nav-bg:#2c3038; --nav-ink:#9aa0a8; --nav-on:#ffffff; --nav-sel:rgba(255,255,255,.17);
-  --blob1:rgba(120,191,51,.17); --blob2:rgba(100,110,255,.22); --blob3:rgba(255,140,90,.14);
-  --av-bg:26%; --av-ink:84%;
+  --sheet:rgba(30,30,35,.90); --glass-border:rgba(255,255,255,.10); --glass-shadow:0 8px 28px rgba(0,0,0,.4);
+  --nav-bg:#26262b; --nav-ink:#f0f0f3; --nav-btn:rgba(255,255,255,.10);
+  --hero-a:#7a2c14; --hero-b:#d9461c; --hero-ink:#ffffff;
+  --blob1:rgba(255,110,60,.20); --blob2:rgba(110,115,255,.18); --blob3:rgba(255,140,90,.12);
 }}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -55,7 +53,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
   radial-gradient(60% 38% at 12% 8%,var(--blob1),transparent 70%),
   radial-gradient(55% 38% at 92% 32%,var(--blob2),transparent 70%),
   radial-gradient(70% 45% at 25% 98%,var(--blob3),transparent 70%)}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 6px 14px 12px}
+header{padding:2px 12px 14px}
 h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.02em}
 .sub{color:var(--hint);font-size:12px;margin-top:2px}
 .banner{background:var(--err-soft);color:var(--err);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:14px}
@@ -66,18 +64,12 @@ h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.02em}
 .empty{text-align:center;color:var(--hint);padding:40px 0}
 .ver{text-align:center;color:var(--hint);font-size:12px;margin-top:20px}
 
-/* аватарки: цвет по имени, у себя — фото из Телеграма */
-.av{display:inline-flex;align-items:center;justify-content:center;flex:none;width:46px;height:46px;border-radius:50%;font-weight:800;font-size:16px;letter-spacing:.02em;overflow:hidden;object-fit:cover;
-  background:hsl(var(--h,210),65%,var(--av-bg));color:hsl(var(--h,210),45%,var(--av-ink));border:2px solid var(--glass-border)}
-.av.big{width:68px;height:68px;font-size:24px}
-.av.me{width:44px;height:44px;box-shadow:0 4px 14px var(--shadow-strong)}
-
 /* нижняя панель: тёмная таблетка, выбранная вкладка с подписью */
 .navpill{position:fixed;left:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;display:flex;gap:2px;padding:7px;border-radius:999px;background:var(--nav-bg);box-shadow:0 8px 24px var(--shadow-strong)}
-.seg-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;min-width:48px;padding:0 13px;border:0;border-radius:999px;background:transparent;color:var(--nav-ink);font-size:14px;font-weight:600}
+.seg-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:48px;min-width:48px;padding:0 13px;border:0;border-radius:999px;color:var(--nav-ink);font-size:14px;font-weight:600;background:var(--nav-btn)}
 .seg-btn svg{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .seg-btn span{display:none}
-.seg-btn[aria-pressed="true"]{background:var(--nav-sel);color:var(--nav-on)}
+.seg-btn[aria-pressed="true"]{background:var(--accent);color:#fff}
 .seg-btn[aria-pressed="true"] span{display:inline}
 
 /* кнопки */
@@ -101,7 +93,7 @@ button:not(.btn):not(:disabled):active{opacity:.6;transition:none}
 .bk .whotxt .name,.bk .whotxt .time{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bk .time{font-weight:600;font-size:14px;color:var(--text-2)}
 .bk .total{font-weight:600}
-.bk .name{margin-top:0;color:var(--fab);font-weight:600;font-size:17px}
+.bk .name{margin-top:0;color:var(--text);font-weight:600;font-size:17px}
 .bk .meta{color:var(--hint);font-size:12px;margin-top:2px}
 .bk .meta.nt{color:var(--text-2);font-size:14px}
 .marks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -118,25 +110,24 @@ button,.acts a,.bk{transition:transform .2s ease-out,opacity .2s ease-out}
 .acts a{display:block}
 .info-note{white-space:pre-wrap;word-break:break-word}
 
-/* календарь: два месяца */
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
+/* календарь: два месяца, как на втором скрине — тёмно-красные карточки, цифры без рамок, сегодня — белый круг */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
 .cal-nav b{font-size:16px;font-weight:800}
 .cal-nav button{border:1px solid var(--glass-border);background:var(--card);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--glass-shadow);width:44px;height:44px;border-radius:50%;font-size:22px;color:var(--text)}
-.mon{padding:10px 10px 12px}
-.mon h3{margin:0 0 6px;font-size:16px;font-weight:800;text-align:center;text-transform:capitalize}
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.dow{font-size:11px;color:var(--hint);text-align:center;padding:2px 0}
-.cell{height:40px;border:0;border-radius:13px;background:var(--field);position:relative;font-weight:600;font-size:15px;color:var(--text);padding:0}
+.mon{padding:20px 14px 14px;border:0;border-radius:30px;color:#fff;background:linear-gradient(180deg,#120709 0%,#3a0b12 38%,#a51d2a 78%,#e8483e 100%);box-shadow:0 10px 30px rgba(120,20,30,.28);-webkit-backdrop-filter:none;backdrop-filter:none}
+.mon-h{display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 12px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.2)}
+.mon-h b{font-size:34px;font-weight:800;letter-spacing:-.02em;text-transform:capitalize}
+.mon-h span{font-size:20px;font-weight:600;color:rgba(255,255,255,.5)}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px}
+.dow{font-size:14px;font-weight:600;color:rgba(255,255,255,.75);text-align:center;padding:8px 0 10px}
+.cell{width:42px;height:42px;justify-self:center;border:0;border-radius:50%;background:transparent;position:relative;font-weight:600;font-size:17px;color:#fff;padding:0}
 .cell.out{visibility:hidden}
-.cell.past{color:var(--hint);font-weight:400}
-.cell.has{background:var(--fab);color:var(--fab-ink);font-weight:800}
-.cell.has.pastb{background:var(--past-bg);color:var(--past-ink);font-weight:600}
-.cell.today{outline:2px solid var(--text);outline-offset:-2px}
-.cell .dot{position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--ok)}
-.cell .dot.bad{background:var(--err);box-shadow:0 0 0 1.5px #fff}
-.cell.has .dot{background:var(--fab-ink)}
-.cell.has.pastb .dot{background:var(--past-ink)}
-.cell.has .dot.bad{background:var(--err)}
+.cell.past{color:rgba(255,255,255,.5)}
+.cell.has{background:rgba(255,255,255,.26);font-weight:800}
+.cell.has.pastb{background:#6c7079;color:#e4e5e9;font-weight:600}
+.cell.today{background:#fff;color:#161616;font-weight:800}
+.cell .dot{position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#7ee2a0;box-shadow:0 0 0 1px rgba(0,0,0,.3)}
+.cell .dot.bad{background:#ffd24a}
 .legend{color:var(--hint);font-size:12px;margin:2px 12px}
 
 /* выручка */
@@ -147,6 +138,9 @@ button,.acts a,.bk{transition:transform .2s ease-out,opacity .2s ease-out}
 .range-row{display:flex;align-items:center;gap:8px}
 .range-row span{color:var(--hint)}
 .range-row input{flex:1;min-width:0;text-align:center}
+.hero{background:linear-gradient(150deg,var(--hero-a),var(--hero-b));border-color:rgba(255,255,255,.45);color:var(--hero-ink)}
+.hero .note{color:var(--hero-ink);opacity:.75}
+.hero .cmp{color:var(--hero-ink)}
 .big{font-size:26px;font-weight:800;letter-spacing:-.02em;margin:2px 0}
 .cmp{font-size:14px;font-weight:600}
 .cmp.up{color:var(--ok)} .cmp.down{color:var(--err)}
@@ -208,7 +202,6 @@ textarea.small{min-height:70px}
     <h1>Брони</h1>
     <div class="sub">Дабл Дак <span id="sync"></span></div>
   </div>
-  <div id="me"></div>
 </header>
 <div id="banner"></div>
 <nav class="navpill" id="tabs">
@@ -224,7 +217,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.2';
+const APP_VERSION = '2026-11-16.3';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -271,31 +264,6 @@ const dmyFull = s => { const p = s.split('-'); return p[2] + '.' + p[1] + '.' + 
 const weekday = s => WEEKDAYS[parseIso(s).getDay()];
 const mondayIso = s => isoAdd(s, -((parseIso(s).getDay() + 6) % 7));
 const pl = (n, a, b, c) => { n = Math.abs(n) % 100; const m = n % 10; return n > 10 && n < 20 ? c : m > 1 && m < 5 ? b : m === 1 ? a : c; };
-
-/* аватарка: инициалы на цветном круге (цвет зависит от имени). Фото клиента из WhatsApp/Телеграма по номеру получить нельзя */
-function initials(name) {
-  const w = String(name || '').match(/[\p{L}\p{N}]+/gu) || [];
-  return (w.length ? (w.length > 1 ? w[0][0] + w[1][0] : w[0].slice(0, 2)) : '?').toUpperCase();
-}
-function hue(name) { let h = 0; for (const c of String(name || '?')) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
-function avatar(name, cls) {
-  return `<span class="av ${cls || ''}" style="--h:${hue(name)}">${esc(initials(name))}</span>`;
-}
-// Моё фото из Телеграма — справа вверху
-function initMe() {
-  const el = $('me'); if (!el) return;
-  let u = null;
-  try { u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user; } catch (e) {}
-  if (!u) return;
-  const name = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || '';
-  const fallback = () => { el.innerHTML = ''; };   // нет фото — ничего не показываем
-  if (!u.photo_url) return;
-  const img = document.createElement('img');
-  img.className = 'av me'; img.alt = ''; img.referrerPolicy = 'no-referrer';
-  img.onerror = fallback;
-  img.src = u.photo_url;
-  el.appendChild(img);
-}
 
 function haptic(kind) {
   if (!tg || !tg.HapticFeedback) return;
@@ -464,7 +432,7 @@ async function commit(changed, removedId) {
 function card(b) {
   const tel = String(b.phone || '').replace(/\D/g, '');
   return `<div class="card bk" data-info="${esc(b.id)}">
-    <div class="top"><div class="who">${avatar(b.name)}<div class="whotxt"><div class="name">${esc(b.name || 'Без имени')}</div><div class="time">${esc(timeRange(b))}</div></div></div><span class="total">${money(total(b))}</span></div>
+    <div class="top"><div class="who"><div class="whotxt"><div class="name">${esc(b.name || 'Без имени')}</div><div class="time">${esc(timeRange(b))}</div></div></div><span class="total">${money(total(b))}</span></div>
     <div class="meta">${money(b.rent)} аренда${b.cleaning ? ' + ' + money(b.cleaning) + ' уборка' : ''}${b.bartender ? ' + ' + money(b.bartender) + ' бармен' : ''}</div>
     ${b.note ? `<div class="meta nt">${esc(b.note)}</div>` : ''}
     <div class="marks">
@@ -510,8 +478,8 @@ function infoSheet(id) {
   const tel = String(b.phone || '').replace(/\D/g, '');
   const row = (l, v) => `<div class="kv"><div>${l}</div><div style="text-align:right"><b>${v}</b></div></div>`;
   const st = (ok, yes, no) => `<span style="color:var(--${ok ? 'ok' : 'err'})">${ok ? yes : no}</span>`;
-  openSheet(`<div style="display:flex;align-items:center;gap:14px">${avatar(b.name, 'big')}<div style="min-width:0"><h2>${esc(b.name || 'Без имени')}</h2>
-    <div class="note" style="margin:0">${dayLabel(b.date)} ${parseIso(b.date).getFullYear()}</div></div></div>
+  openSheet(`<h2>${esc(b.name || 'Без имени')}</h2>
+    <div class="note" style="margin-top:0">${dayLabel(b.date)} ${parseIso(b.date).getFullYear()}</div>
     <div class="card" style="margin-top:12px">
       ${row('Время', esc(timeRange(b)))}
       ${row('Телефон', b.phone ? esc(fmtPhone(b.phone)) : 'не указан')}
@@ -591,7 +559,7 @@ function monthHtml(y, m) {
   const first = (new Date(y, m, 1).getDay() + 6) % 7;
   const days = new Date(y, m + 1, 0).getDate();
   const t = todayIso();
-  let h = `<div class="card mon"><h3>${MONTHS[m]} ${y}</h3><div class="grid">`;
+  let h = `<div class="card mon"><div class="mon-h"><b>${MONTHS[m]}</b><span>${String(y).slice(2)}</span></div><div class="grid">`;
   ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => h += `<div class="dow">${d}</div>`);
   for (let i = 0; i < first; i++) h += '<div class="cell out"></div>';
   for (let d = 1; d <= days; d++) {
@@ -609,7 +577,7 @@ function renderCal() {
     : `${MONTHS_S[a.getMonth()]} ${a.getFullYear()} – ${MONTHS_S[b.getMonth()]} ${b.getFullYear()}`;
   return `<div class="cal-nav"><button id="cPrev" aria-label="Назад">‹</button><b>${title}</b><button id="cNext" aria-label="Вперёд">›</button></div>`
     + monthHtml(a.getFullYear(), a.getMonth()) + monthHtml(b.getFullYear(), b.getMonth())
-    + '<div class="legend">Серые дни — прошедшие брони. Красная точка — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
+    + '<div class="legend">Серый круг — прошедшая бронь. Жёлтая точка — не получен залог или нет договора, зелёная — всё в порядке. Нажмите на день, чтобы открыть.</div>';
 }
 
 /* ---------- выручка (как в «Фартук · Смена») ---------- */
@@ -649,7 +617,7 @@ function renderRev() {
   const prev = calc(prevFrom, prevTo);
   h += `<div class="sub" style="margin:2px 12px 8px">${f === t ? dmyFull(f) : dmyFull(f) + ' – ' + dmyFull(t)}</div>`;
 
-  h += `<div class="card"><div class="note" style="margin-top:0">Выручка по броням</div><div class="big">${money(d.rev)}</div>`;
+  h += `<div class="card hero"><div class="note" style="margin-top:0">Выручка по броням</div><div class="big">${money(d.rev)}</div>`;
   if (prev.rev > 0) {
     const pct = Math.round((d.rev - prev.rev) / prev.rev * 100);
     h += `<div class="cmp ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}">${pct > 0 ? '+' : pct < 0 ? '−' : ''}${Math.abs(pct)}% к прошлому периоду</div>
@@ -883,7 +851,6 @@ document.addEventListener('touchend', endPress, { passive: true });
 document.addEventListener('touchcancel', endPress, { passive: true });
 
 loadCache();
-initMe();
 render();
 refresh(true);
 document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastFetch > 20000) refresh(true); });
