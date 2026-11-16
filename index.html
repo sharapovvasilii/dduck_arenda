@@ -201,6 +201,23 @@ textarea.small{min-height:70px}
 .center{text-align:center;padding:60px 24px}
 .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--nav-bg);color:#fff;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid var(--glass-border-nav);padding:11px 18px;border-radius:16px;font-size:14px;z-index:60;opacity:0;transition:.2s;pointer-events:none;max-width:90%}
 .toast.on{opacity:1}
+
+/* ===== как на скрине 1: персиковая рамка + белое матовое стекло внутри, строки-«таблетки», круглые кнопки панели ===== */
+:root{--card-in:rgba(255,255,255,.74);--frame-a:rgba(255,205,180,.70);--frame-b:rgba(255,150,100,.46)}
+@media (prefers-color-scheme:dark){:root{--card-in:rgba(44,34,30,.62);--frame-a:rgba(255,150,50,.30);--frame-b:rgba(210,60,20,.30)}}
+h1{font-size:34px;line-height:1.1}
+.sub{font-size:17px;font-weight:600;margin-top:4px}
+.card{border-radius:28px}
+.card.bk,.card.hero{padding:7px;background:linear-gradient(150deg,var(--frame-a),var(--frame-b))}
+.card.hero{background:linear-gradient(150deg,var(--hero-a),var(--hero-b))}
+.bk-in{background:var(--card-in);border:1px solid var(--glass-border);border-radius:22px;padding:14px;box-shadow:inset 0 1px 0 var(--glass-hi);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5)}
+.sheet .card.bk{background:linear-gradient(150deg,var(--frame-a),var(--frame-b));border-color:transparent}
+.card>.kv{background:var(--field);border:1px solid var(--glass-border);border-radius:20px;padding:13px 16px;margin-top:8px;box-shadow:inset 0 1px 0 var(--glass-hi)}
+.card>.kv:first-child{margin-top:0}
+.sheet .card>.kv{background:var(--card-in)}
+.navpill{border-radius:36px}
+.seg-btn{border-radius:24px}
+.fab{border-radius:50%}
 </style>
 </head>
 <body>
@@ -224,7 +241,7 @@ textarea.small{min-height:70px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.6';
+const APP_VERSION = '2026-11-16.7';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -438,7 +455,7 @@ async function commit(changed, removedId) {
 /* ---------- карточка брони ---------- */
 function card(b) {
   const tel = String(b.phone || '').replace(/\D/g, '');
-  return `<div class="card bk" data-info="${esc(b.id)}">
+  return `<div class="card bk" data-info="${esc(b.id)}"><div class="bk-in">
     <div class="top"><div class="who"><div class="whotxt"><div class="name">${esc(b.name || 'Без имени')}</div><div class="time">${esc(timeRange(b))}</div></div></div><span class="total">${money(total(b))}</span></div>
     <div class="meta">${money(b.rent)} аренда${b.cleaning ? ' + ' + money(b.cleaning) + ' уборка' : ''}${b.bartender ? ' + ' + money(b.bartender) + ' бармен' : ''}</div>
     ${b.note ? `<div class="meta nt">${esc(b.note)}</div>` : ''}
@@ -450,7 +467,7 @@ function card(b) {
       ${tel ? `<a href="tel:+${tel}" data-tel="${tel}">Позвонить</a><a href="https://wa.me/${tel}" data-wa="${tel}">WhatsApp</a>` : ''}
       <button data-edit="${esc(b.id)}">Изменить</button>
     </div>
-  </div>`;
+  </div></div>`;
 }
 
 function copyText(s) {
@@ -625,13 +642,13 @@ function renderRev() {
   const prev = calc(prevFrom, prevTo);
   h += `<div class="sub" style="margin:2px 12px 8px">${f === t ? dmyFull(f) : dmyFull(f) + ' – ' + dmyFull(t)}</div>`;
 
-  h += `<div class="card hero"><div class="note" style="margin-top:0">Выручка по броням</div><div class="big">${money(d.rev)}</div>`;
+  h += `<div class="card hero"><div class="bk-in"><div class="note" style="margin-top:0">Выручка по броням</div><div class="big">${money(d.rev)}</div>`;
   if (prev.rev > 0) {
     const pct = Math.round((d.rev - prev.rev) / prev.rev * 100);
     h += `<div class="cmp ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}">${pct > 0 ? '+' : pct < 0 ? '−' : ''}${Math.abs(pct)}% к прошлому периоду</div>
       <div class="note">${dmy(prev.from)}–${dmy(prev.to)}: ${money(prev.rev)}</div>`;
   }
-  h += `<div class="note">${d.n ? `${d.n} ${pl(d.n, 'бронь', 'брони', 'броней')} · в среднем ${money(d.rev / d.n)} за бронь` : 'Броней за этот период нет'}</div></div>`;
+  h += `<div class="note">${d.n ? `${d.n} ${pl(d.n, 'бронь', 'брони', 'броней')} · в среднем ${money(d.rev / d.n)} за бронь` : 'Броней за этот период нет'}</div></div></div>`;
   if (!d.n) return h;
 
   const paid = d.list.filter(b => b.depositPaid), noDep = d.list.filter(b => !b.depositPaid), noCon = d.list.filter(b => !b.contract);
