@@ -288,6 +288,30 @@ header{padding:2px 18px 14px}
 .sheet .card>.kv{flex-direction:row;justify-content:space-between;align-items:baseline;gap:12px;padding:15px 18px;margin-top:8px}
 .sheet .card>.kv>div:first-child{font-size:16px;color:var(--hint)}
 .sheet .card>.kv>div:last-child{text-align:right}
+
+/* ===== правки 2026-11-16.15 ===== */
+/* Залог/Договор: всегда оранжевые; нет — зачёркнуто и крестик */
+.mark,.mark.ok{background:rgba(232,72,28,.90);color:#fff;border:1px solid rgba(255,255,255,.40);box-shadow:inset 0 1px 0 rgba(255,255,255,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.mark s{text-decoration:line-through;text-decoration-thickness:1.5px}
+/* календарь: нет залога/договора — оранжевый круг с чёрточкой снизу */
+.cell.has.bad,.cell.has.pastb.bad{background:var(--accent);color:#fff;border-color:transparent}
+.cell.has.pastb,.cell.has.pastb.bad{background:#ececef;color:#7d818b}
+.cell.has.bad::after{content:"";position:absolute;left:50%;bottom:6px;width:12px;height:2px;margin-left:-6px;border-radius:2px;background:#fff}
+.cell.has.pastb.bad::after{background:#7d818b}
+.mon-h{padding-left:calc(100%/14 - 11px);padding-right:calc(100%/14 - 11px)}
+.big{font-weight:700}
+h1{margin-left:-1px}
+.bad-row{color:var(--text)}
+.bad-row b{color:var(--accent-ink)}
+/* матовое стекло на окошках и кнопках (немного) */
+.bk-in,.mon{background:rgba(255,255,255,.76);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5)}
+.card>.kv{background:rgba(255,255,255,.70);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5)}
+.acts a,.acts button{background:rgba(110,110,130,.13);border:1px solid rgba(255,255,255,.65);box-shadow:inset 0 1px 0 rgba(255,255,255,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.chip{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.85);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.chip[aria-pressed="true"]{background:rgba(232,72,28,.90);border-color:rgba(255,255,255,.4)}
+.btn{background:rgba(232,72,28,.92);border:1px solid rgba(255,255,255,.40);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.btn-light{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.85)}
+.cal-nav button{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 </style>
 </head>
 <body>
@@ -311,7 +335,7 @@ header{padding:2px 18px 14px}
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.14';
+const APP_VERSION = '2026-11-16.15';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -523,6 +547,8 @@ async function commit(changed, removedId) {
 }
 
 /* ---------- карточка брони ---------- */
+// «Договор ✓» или зачёркнутое «Договор» с крестиком
+const markLbl = (name, on) => on ? name + ' ✓' : '<s>' + name + '</s> ✗';
 function card(b) {
   const tel = String(b.phone || '').replace(/\D/g, '');
   return `<div class="card bk" data-info="${esc(b.id)}"><div class="bk-in">
@@ -530,8 +556,8 @@ function card(b) {
     <div class="meta">${money(b.rent)} аренда${b.cleaning ? ' + ' + money(b.cleaning) + ' уборка' : ''}${b.bartender ? ' + ' + money(b.bartender) + ' бармен' : ''}</div>
     ${b.note ? `<div class="meta nt">${esc(b.note)}</div>` : ''}
     <div class="marks">
-      <button class="mark ${b.depositPaid ? 'ok' : ''}" data-tog="depositPaid" data-id="${esc(b.id)}">Залог ${b.depositPaid ? '✓' : '✗'}</button>
-      <button class="mark ${b.contract ? 'ok' : ''}" data-tog="contract" data-id="${esc(b.id)}">Договор ${b.contract ? '✓' : '✗'}</button>
+      <button class="mark ${b.depositPaid ? 'ok' : ''}" data-tog="depositPaid" data-id="${esc(b.id)}">${markLbl('Залог', b.depositPaid)}</button>
+      <button class="mark ${b.contract ? 'ok' : ''}" data-tog="contract" data-id="${esc(b.id)}">${markLbl('Договор', b.contract)}</button>
     </div>
     <div class="acts">
       ${tel ? `<a href="tel:+${tel}" data-tel="${tel}">Позвонить</a><a href="https://wa.me/${tel}" data-wa="${tel}">WhatsApp</a>` : ''}
@@ -571,7 +597,7 @@ function infoSheet(id) {
   dayOpen = null;
   const tel = String(b.phone || '').replace(/\D/g, '');
   const row = (l, v) => `<div class="kv"><div>${l}</div><div style="text-align:right"><b>${v}</b></div></div>`;
-  const st = (ok, yes, no) => `<span style="color:var(--${ok ? 'accent-ink' : 'err'})">${ok ? yes : no}</span>`;
+  const st = (ok, yes, no) => `<span style="color:var(--accent-ink)">${ok ? yes : no}</span>`;
   openSheet(`<h2>${esc(b.name || 'Без имени')}</h2>
     <div class="note" style="margin-top:0">${dayLabel(b.date)} ${parseIso(b.date).getFullYear()}</div>
     <div class="card" style="margin-top:12px">
@@ -672,7 +698,7 @@ function renderCal() {
     : `${cap(MONTHS[a.getMonth()])} ${a.getFullYear()} – ${cap(MONTHS[b.getMonth()])} ${b.getFullYear()}`;
   return `<div class="cal-nav"><button id="cPrev" aria-label="Назад">‹</button><b>${title}</b><button id="cNext" aria-label="Вперёд">›</button></div>`
     + monthHtml(a.getFullYear(), a.getMonth()) + monthHtml(b.getFullYear(), b.getMonth())
-    + '<div class="legend">Контур — сегодня, оранжевый круг — бронь, серый — прошедшая, розовый — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
+    + '<div class="legend">Контур — сегодня, оранжевый круг — бронь, серый — прошедшая, черта внизу — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
 }
 
 /* ---------- выручка (как в «Фартук · Смена») ---------- */
@@ -861,15 +887,15 @@ function editSheet(id, date) {
     ${f('phone', 'Телефон', 'tel')}
     ${f('depositSum', 'Сумма залога', 'number')}
     <div class="marks">
-      <button class="mark ${b.depositPaid ? 'ok' : ''}" id="eDep">Залог ${b.depositPaid ? '✓' : '✗'}</button>
-      <button class="mark ${b.contract ? 'ok' : ''}" id="eCon">Договор ${b.contract ? '✓' : '✗'}</button>
+      <button class="mark ${b.depositPaid ? 'ok' : ''}" id="eDep">${markLbl('Залог', b.depositPaid)}</button>
+      <button class="mark ${b.contract ? 'ok' : ''}" id="eCon">${markLbl('Договор', b.contract)}</button>
     </div>
     <label>Заметка</label><textarea id="f_note" class="small">${esc(b.note)}</textarea>
     <button class="btn" id="eSave" style="margin-top:14px">Сохранить</button>
     <button class="btn btn-light" id="eCancel">Отмена</button>
     ${id ? '<button class="btn btn-del" id="eDel">Удалить бронь</button>' : ''}`);
   let dep = b.depositPaid, con = b.contract;
-  const setM = (el, on, name) => { el.classList.toggle('ok', on); el.textContent = name + (on ? ' ✓' : ' ✗'); };
+  const setM = (el, on, name) => { el.classList.toggle('ok', on); el.innerHTML = markLbl(name, on); };
   $('eDep').onclick = () => { dep = !dep; setM($('eDep'), dep, 'Залог'); };
   $('eCon').onclick = () => { con = !con; setM($('eCon'), con, 'Договор'); };
   $('eCancel').onclick = closeSheet;
