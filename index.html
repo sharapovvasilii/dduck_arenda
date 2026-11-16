@@ -234,13 +234,32 @@ header .sub{text-transform:uppercase;font-weight:500;font-size:17px;letter-spaci
 .chip[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:none}
 .btn{border-radius:999px}
 .card>.kv{border-radius:36px;padding:14px 26px}
+
+/* ===== шапка и календарь по новым скринам ===== */
+header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;color:var(--text);margin-top:8px}
+.vbar{display:inline-block;width:1.5px;height:1.15em;background:var(--text);margin:0 10px;vertical-align:-.2em}
+.cal-nav b{font-size:16px;font-weight:400;color:var(--hint)}
+.mon{background:rgba(255,255,255,.96);border:0;border-radius:36px;padding:26px 16px 22px;box-shadow:0 10px 28px rgba(60,60,90,.08);-webkit-backdrop-filter:none;backdrop-filter:none}
+.mon-h{border-bottom:0;padding:0 8px 16px;margin-bottom:0}
+.mon-h b{font-size:30px;font-weight:700;color:var(--text)}
+.mon-h span{font-size:28px;font-weight:700;color:#7d818b}
+.dow{font-size:16px;font-weight:400;color:#7d818b;padding:6px 0 10px}
+.grid{row-gap:4px}
+.cell{width:40px;height:40px;border-radius:50%;font-size:21px;font-weight:400;color:#7d818b}
+.cell.past{color:#7d818b;font-weight:400}
+.cell.has{background:var(--accent);color:#fff;font-weight:400;border-color:transparent}
+.cell.today,.cell.today:not(.has){background:transparent;border-color:#c4c6cc;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.cell.today.has{background:var(--accent);border-color:transparent;color:#fff}
+.cell.has.bad{background:var(--bad-soft);color:var(--bad);border-color:var(--bad-soft)}
+.cell.has.pastb{background:#ececef;color:#7d818b;border-color:transparent}
+.cell.has.pastb.bad{color:var(--bad);border-color:var(--bad-soft)}
 </style>
 </head>
 <body>
 <header>
   <div>
     <h1>Брони</h1>
-    <div class="sub">Дабл Дак <span id="sync"></span></div>
+    <div class="sub">БАР ДАБЛ ДАК<span class="vbar"></span>СПб, Загородный пр. 22 <span id="sync"></span></div>
   </div>
 </header>
 <div id="banner"></div>
@@ -257,7 +276,7 @@ header .sub{text-transform:uppercase;font-weight:500;font-size:17px;letter-spaci
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.10';
+const APP_VERSION = '2026-11-16.11';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -599,7 +618,7 @@ function monthHtml(y, m) {
   const first = (new Date(y, m, 1).getDay() + 6) % 7;
   const days = new Date(y, m + 1, 0).getDate();
   const t = todayIso();
-  let h = `<div class="card mon"><div class="mon-h"><b>${MONTHS[m]}</b><span>${String(y).slice(2)}</span></div><div class="grid">`;
+  let h = `<div class="card mon"><div class="mon-h"><b>${MONTHS[m]}</b><span>${y}</span></div><div class="grid">`;
   ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => h += `<div class="dow">${d}</div>`);
   for (let i = 0; i < first; i++) h += '<div class="cell out"></div>';
   for (let d = 1; d <= days; d++) {
@@ -618,7 +637,7 @@ function renderCal() {
     : `${cap(MONTHS[a.getMonth()])} ${a.getFullYear()} – ${cap(MONTHS[b.getMonth()])} ${b.getFullYear()}`;
   return `<div class="cal-nav"><button id="cPrev" aria-label="Назад">‹</button><b>${title}</b><button id="cNext" aria-label="Вперёд">›</button></div>`
     + monthHtml(a.getFullYear(), a.getMonth()) + monthHtml(b.getFullYear(), b.getMonth())
-    + '<div class="legend">Окошко — сегодня, оранжевая клетка — бронь, серая — прошедшая, розовая — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
+    + '<div class="legend">Контур — сегодня, оранжевый круг — бронь, серый — прошедшая, розовый — не получен залог или нет договора. Нажмите на день, чтобы открыть.</div>';
 }
 
 /* ---------- выручка (как в «Фартук · Смена») ---------- */
