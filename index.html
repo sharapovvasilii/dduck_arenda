@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Брони</title>
 <link rel="preload" href="fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Inter-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://script.google.com">
@@ -12,6 +13,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 @font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/Inter-Regular.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-weight:500;font-style:normal;font-display:swap;src:url("fonts/Inter-Medium.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:600;font-style:normal;font-display:swap;src:url("fonts/Inter-SemiBold.woff2") format("woff2")}
 @font-face{font-family:"Inter";font-weight:800;font-style:normal;font-display:swap;src:url("fonts/Inter-ExtraBold.woff2") format("woff2")}
 /* Вёрстка как в «Фартук · Смена». Цвета: серый акцент (оттенки серого), тема светлая/тёмная по настройке телефона.
@@ -214,6 +216,24 @@ body::before{background:
 .card>.kv>div:first-child small{font-size:13px;color:var(--text-2);margin-top:1px}
 .card>.kv>div:last-child b{font-size:17px;font-weight:600}
 .sheet .card>.kv{background:var(--card-in)}
+
+/* ===== по скринам 5 и 6: белые карточки, оранжевые «Залог/Договор», серые овальные кнопки, лёгкий заголовок ===== */
+h1{font-weight:500;font-size:38px;letter-spacing:-.01em}
+header .sub{text-transform:uppercase;font-weight:500;font-size:17px;letter-spacing:.02em;color:var(--text-2);margin-top:6px}
+.day-h{font-size:16px;font-weight:500;color:var(--text-2);text-transform:uppercase;letter-spacing:.01em;margin:22px 12px 10px}
+.day-h.today{color:var(--accent-ink)}
+.card.bk,.card.hero,.sheet .card.bk{padding:0;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.bk-in{background:rgba(255,255,255,.94);border:0;border-radius:30px;padding:18px;box-shadow:0 10px 28px rgba(60,60,90,.10)}
+.bk .time{font-weight:500}
+.marks{gap:10px;margin-top:14px}
+.mark{border-radius:999px;font-size:17px;font-weight:500;padding:15px 8px;border:0;box-shadow:none;background:var(--bad-soft);color:var(--bad)}
+.mark.ok{background:var(--accent);color:#fff}
+.acts{gap:10px;margin-top:10px}
+.acts a,.acts button{border-radius:999px;border:0;box-shadow:none;background:rgba(110,110,130,.12);color:var(--text-2);font-weight:500;font-size:16px;padding:15px 4px}
+.chip{border-radius:999px;border:0;font-weight:500;font-size:17px;padding:13px 20px;background:rgba(255,255,255,.82)}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:none}
+.btn{border-radius:999px}
+.card>.kv{border-radius:36px;padding:14px 26px}
 </style>
 </head>
 <body>
@@ -237,7 +257,7 @@ body::before{background:
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.9';
+const APP_VERSION = '2026-11-16.10';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
@@ -644,7 +664,7 @@ function renderRev() {
     h += `<div class="cmp ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}">${pct > 0 ? '+' : pct < 0 ? '−' : ''}${Math.abs(pct)}% к прошлому периоду</div>
       <div class="note">${dmy(prev.from)}–${dmy(prev.to)}: ${money(prev.rev)}</div>`;
   }
-  h += `<div class="note">${d.n ? `${d.n} ${pl(d.n, 'бронь', 'брони', 'броней')} · в среднем ${money(d.rev / d.n)} за бронь` : 'Броней за этот период нет'}</div></div></div>`;
+  h += `<div class="note">${d.n ? `${d.n} ${pl(d.n, 'бронь', 'брони', 'броней')} | в среднем ${fmt(d.rev / d.n)} за бронь` : 'Броней за этот период нет'}</div></div></div>`;
   if (!d.n) return h;
 
   const paid = d.list.filter(b => b.depositPaid), noDep = d.list.filter(b => !b.depositPaid), noCon = d.list.filter(b => !b.contract);
