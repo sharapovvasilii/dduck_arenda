@@ -32,25 +32,8 @@
   --bad:#c8205a; --bad-soft:rgba(214,40,90,.14); --tile:rgba(20,20,40,.06); --tile-border:rgba(20,20,40,.20);
   --hero-a:rgba(255,205,180,.85); --hero-b:rgba(255,150,100,.60);
   --blob1:rgba(255,150,110,.38); --blob2:rgba(160,160,255,.32); --blob3:rgba(255,190,160,.32);
-  color-scheme:light dark;
+  color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root{
-  /* тёмная тема: тёмно-коричневый фон и оранжевое свечение (скрин 3) */
-  --bg:#110d0b; --card:rgba(78,62,54,.38); --field:rgba(255,255,255,.07); --line:rgba(255,255,255,.1);
-  --text:#f6efe9; --text-2:#c9bcb2; --hint:#a39489;
-  --accent:#ff7a2e; --accent-ink:#ffa05a; --accent-soft:rgba(255,122,46,.22); --on-color:#ffffff; --bar:#ff9a3d;
-  --dark:#f6efe9; --seg-ink:#1a110c;
-  --grad:#ff6a2e; --glow:rgba(255,106,46,.30);
-  --fab:#ff6a2e; --fab-ink:#ffffff;
-  --ok:#4cc27f; --ok-soft:rgba(76,194,127,.18); --warn:#e8a73a; --warn-soft:rgba(232,167,58,.18); --err:#ff6b5e; --err-soft:rgba(255,107,94,.18);
-  --scrim:rgba(0,0,0,.55); --shadow:rgba(0,0,0,.3); --shadow-strong:rgba(0,0,0,.55);
-  --sheet:rgba(34,26,22,.80); --glass-border:rgba(255,255,255,.11); --glass-hi:rgba(255,255,255,.13); --glass-border-nav:rgba(255,255,255,.14);
-  --glass-shadow:0 10px 30px rgba(0,0,0,.45);
-  --nav-bg:rgba(44,34,29,.72); --nav-ink:#f6efe9; --nav-btn:rgba(255,255,255,.10);
-  --bad:#ff7aa6; --bad-soft:rgba(255,90,140,.24); --tile:rgba(255,255,255,.14); --tile-border:rgba(255,255,255,.28);
-  --hero-a:rgba(255,150,50,.30); --hero-b:rgba(210,60,20,.30);
-  --blob1:rgba(255,140,30,.28); --blob2:rgba(215,80,20,.22); --blob3:rgba(255,120,40,.17);
-}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 b,strong{font-weight:600}
@@ -204,7 +187,6 @@ textarea.small{min-height:70px}
 
 /* ===== как на скрине 1: персиковая рамка + белое матовое стекло внутри, строки-«таблетки», круглые кнопки панели ===== */
 :root{--card-in:rgba(255,255,255,.74);--frame-a:rgba(255,205,180,.70);--frame-b:rgba(255,150,100,.46)}
-@media (prefers-color-scheme:dark){:root{--card-in:rgba(44,34,30,.62);--frame-a:rgba(255,150,50,.30);--frame-b:rgba(210,60,20,.30)}}
 h1{font-size:34px;line-height:1.1}
 .sub{font-size:17px;font-weight:600;margin-top:4px}
 .card{border-radius:28px}
@@ -220,8 +202,8 @@ h1{font-size:34px;line-height:1.1}
 .fab{border-radius:50%}
 
 /* ===== фон и строки как на скрине 1 ===== */
-@media (prefers-color-scheme:light){:root{--bg:#f4f4f7;--card:rgba(255,255,255,.62);--card-in:rgba(255,255,255,.82);
-  --blob1:rgba(255,200,160,.30);--blob2:rgba(255,215,190,.50);--blob3:rgba(255,120,55,.36)}}
+html:root{--bg:#f4f4f7;--card:rgba(255,255,255,.62);--card-in:rgba(255,255,255,.82);
+  --blob1:rgba(255,200,160,.30);--blob2:rgba(255,215,190,.50);--blob3:rgba(255,120,55,.36)}
 body::before{background:
   radial-gradient(70% 28% at 12% 3%,var(--blob2),transparent 70%),
   radial-gradient(95% 52% at 50% 94%,var(--blob3),transparent 72%),
@@ -255,7 +237,7 @@ body::before{background:
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.8';
+const APP_VERSION = '2026-11-16.9';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
