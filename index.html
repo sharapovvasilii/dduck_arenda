@@ -260,10 +260,10 @@ header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;
 .mon-h b{font-size:26px;font-weight:600}
 .mon-h span{font-size:24px;font-weight:600}
 .mon-h{padding-bottom:12px}
-.grid{row-gap:0}
-.cell{width:38px;height:38px;font-weight:400}
+.grid{row-gap:4px}
+.cell{width:40px;height:40px;font-weight:400;font-variant-numeric:proportional-nums;letter-spacing:-.03em}
 .cell.today,.cell.today:not(.has),.cell.today.has,.cell.has,.cell.has.pastb,.cell.has.bad{font-weight:400}
-.dow{padding:4px 0 8px}
+.dow{padding:6px 0 10px}
 </style>
 </head>
 <body>
@@ -287,7 +287,7 @@ header .sub{text-transform:none;font-weight:400;font-size:17px;letter-spacing:0;
 <script>
 /* ============ НАСТРОЙКИ ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKlFP3dOh51GF1FZ4gvpCaoGXEorNJs1FAU87ynrZCC7SzcC5yYHToD-d7s3xvQZ5orw/exec';   // ссылка на веб-приложение Apps Script (оканчивается на /exec)
-const APP_VERSION = '2026-11-16.12';
+const APP_VERSION = '2026-11-16.13';
 /* ===================================== */
 
 const tg = window.Telegram && Telegram.WebApp;
